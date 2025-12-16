@@ -1,12 +1,15 @@
 package org.example;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Books {
+public class Book {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String author;
@@ -16,7 +19,7 @@ public class Books {
     private int isbn;
     private int publishYear;
 
-    public Books() {
+    public Book() {
     }
 
     public int getPublishYear() {
