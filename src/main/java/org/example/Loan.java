@@ -1,6 +1,8 @@
 package org.example;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.ZonedDateTime;
@@ -10,6 +12,7 @@ import java.util.Date;
 public class Loan {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long loanId;
 
     private ZonedDateTime loanDate;
@@ -51,5 +54,9 @@ public class Loan {
 
     public void setLoanDate(ZonedDateTime loanDate) {
         this.loanDate = loanDate;
+    }
+
+    public Long getLoanId() {
+        return loanId;
     }
 }
