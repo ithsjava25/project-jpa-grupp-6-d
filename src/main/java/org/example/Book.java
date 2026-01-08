@@ -16,7 +16,6 @@ public class Book {
     private Long bookId;
 
     private String title;
-    private String genre;
 
     @Column(length = 2000)
     private String description;
@@ -53,13 +52,6 @@ public class Book {
         this.description = description;
     }
 
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
 
     public String getTitle() {
         return title;
