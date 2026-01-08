@@ -114,8 +114,6 @@ public class SeedData {
 
                 saved++;
                 System.out.println("Sparade 1 bok: " + title);
-
-                break; // <-- smoke test: bara första raden först
             }
         }
 

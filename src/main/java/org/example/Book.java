@@ -3,7 +3,9 @@ package org.example;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -69,20 +71,22 @@ public class Book {
     public Long getId() {
         return bookId;
     }
-    @ManyToMany @JoinTable(name = "book_author",
-    joinColumns = @JoinColumn(name="bookId"))
-    private List<Author> authors = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "book_author",
+        joinColumns = @JoinColumn(name = "bookId"))
+    private Set<Author> authors = new HashSet<>();
 
     @ManyToMany(mappedBy = "books")
-    private List<Genre> genres = new ArrayList<>();
+    private Set<Genre> genres = new HashSet<>();
 
     @OneToOne @JoinColumn(name = "loaned_book")
     private Loan loan;
 
-    public List<Author> getAuthors() {
+    public Set<Author> getAuthors() {
         return authors;
     }
-    public List<Genre> getGenres() {
+
+    public Set<Genre> getGenres() {
         return genres;
     }
 
