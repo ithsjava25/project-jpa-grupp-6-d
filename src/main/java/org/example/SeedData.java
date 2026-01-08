@@ -31,10 +31,22 @@ public class SeedData {
             int count = 0;
             while ((line = br.readLine()) != null) {
                 if (line.isBlank()) continue;
-                System.out.println(line);
+                String[] c = line.split("\t");
+
+                String title = c[0].trim();
+                String description = c[1].trim();
+                String isbn = c[2].trim();
+                String year = c[3].trim();
+                String firstName = c[4].trim();
+                String lastName = c[5].trim();
+                String genre = c[6].trim();
+
+                System.out.println(title + " | " + description + " | " + year + " | " + firstName + " " + lastName + " | " + genre + " | " + isbn);
+
                 count++;
             }
-            System.out.println("Rader: " + count + " ✅");
+
+            System.out.println("Rader: " + count);
         }
 
         em.close();
