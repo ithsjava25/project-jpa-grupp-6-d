@@ -19,9 +19,24 @@ public class BookSearch {
             .getResultList();
     }
 
-    static void main() {
+    //todo: Serch by author
+    public List<Book> searchByAuthor(EntityManager em, String query) {
+        if (query == null || query.isBlank()) return List.of();
 
+        return em.createQuery("""
+            SELECT DISTINCT b
+            FROM Book b
+            JOIN b.authors a
+            WHERE LOWER(a.firstName) LIKE LOWER(:q)
+               OR LOWER(a.lastName)  LIKE LOWER(:q)
+            ORDER BY b.title
+            """, Book.class)
+            .setParameter("q", "%" + query.trim() + "%")
+            .getResultList();
     }
+
+
+    //todo: Serch by genre
 }
 
 
