@@ -2,8 +2,8 @@ package org.example;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Author {
@@ -39,6 +39,6 @@ public class Author {
     }
 
     @ManyToMany(mappedBy = "authors")
-    private List<Book> books = new ArrayList<>();
+    private Set<Book> books = new HashSet<>();
 
 }
