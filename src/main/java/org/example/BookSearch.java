@@ -10,11 +10,12 @@ public class BookSearch {
         if (query == null || query.isBlank()) return List.of();
 
         return em.createQuery("""
-                SELECT b
-                FROM Book b
-                WHERE LOWER(b.title) LIKE LOWER(:q)
-                ORDER BY b.title
-                """, Book.class)
+            SELECT DISTINCT b
+            FROM Book b
+            LEFT JOIN FETCH b.authors a
+            WHERE LOWER(b.title) LIKE LOWER(:q)
+            ORDER BY b.title
+            """, Book.class)
             .setParameter("q", "%" + query.trim() + "%")
             .getResultList();
     }
@@ -26,7 +27,7 @@ public class BookSearch {
         return em.createQuery("""
             SELECT DISTINCT b
             FROM Book b
-            JOIN b.authors a
+            JOIN FETCH b.authors a
             WHERE LOWER(a.firstName) LIKE LOWER(:q)
                OR LOWER(a.lastName)  LIKE LOWER(:q)
             ORDER BY b.title
@@ -44,7 +45,8 @@ public class BookSearch {
             SELECT DISTINCT b
             FROM Book b
             JOIN b.genres g
-            WHERE LOWER(g.genreName) LIKE LOWER(:q)
+            LEFT JOIN FETCH b.authors a
+            WHERE LOWER(g.name) LIKE LOWER(:q)
             ORDER BY b.title
             """, Book.class)
             .setParameter("q", "%" + query.trim() + "%")
