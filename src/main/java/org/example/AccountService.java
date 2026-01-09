@@ -28,11 +28,15 @@ public class AccountService {
     }
 
     public User createAccount(String firstName, String lastName, String email, String password) {
+        // Generate username
+        String username = generateUsername(firstName, lastName);
+
         User newUser = new User();
         newUser.setFirstName(firstName);
         newUser.setLastName(lastName);
         newUser.setEmail(email);
         newUser.setPassword(password);
+        newUser.setUsername(username);
         return accountRepository.createAccount(newUser);
     }
 
@@ -53,8 +57,12 @@ public class AccountService {
         return accountRepository.updateAccount(user);
     }
 
-    public boolean deleteAccount(Long id) {
-        return accountRepository.deleteAccount(id);
+    public boolean deleteAccountById(Long id) {
+        return accountRepository.deleteAccountById(id);
+    }
+
+    public boolean deleteAccountByUsername(String username) {
+        return accountRepository.deleteAccountByUsername(username);
     }
 
     public User findById(Long id) {
@@ -72,4 +80,24 @@ public class AccountService {
     public Iterable<User> findAll() {
         return accountRepository.findAllUsers();
     }
+
+    private String generateUsername(String firstName, String lastName) {
+        // Create username from first and last name (Dennis Dennisson = denden)
+        String concatUsername = (createSubstrings(firstName) + createSubstrings(lastName)).toLowerCase();
+        String username = concatUsername;
+
+        int counter = 1;
+        while(accountRepository.findByUsername(username) != null) {
+            username = concatUsername + counter;
+            counter++;
+        }
+        return username;
+    }
+
+    private String createSubstrings(String name) {
+        // Length of 3 or length of name if shorter than 3
+        int length = Math.min(name.length(), 3);
+        return name.substring(0, length);
+    }
+
 }
