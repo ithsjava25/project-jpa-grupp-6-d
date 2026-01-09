@@ -2,8 +2,13 @@ package org.example;
 
 import org.example.repository.AccountRepository;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
 // Account business logic
 public class AccountService {
+
+    static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
     private AccountRepository accountRepository;
 
@@ -28,6 +33,26 @@ public class AccountService {
     }
 
     public User createAccount(String firstName, String lastName, String email, String password) {
+        // Check for null or empty
+        if (isInvalid(firstName) || isInvalid(lastName) || isInvalid(email) || isInvalid(password)) {
+            throw new IllegalArgumentException("No fields can be empty.");
+        }
+
+        // Validate email with regex pattern
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            throw new IllegalArgumentException("Invalid email format.");
+        }
+
+        // Validate password length
+        if (password.length() < 3) {
+            throw new IllegalArgumentException("Password must be at least 3 characters long.");
+        }
+
+        // Check for existing email
+        if (accountRepository.findByEmail(email) != null) {
+            throw new IllegalArgumentException("An account with this email already exists.");
+        }
+
         // Generate username
         String username = generateUsername(firstName, lastName);
 
@@ -77,7 +102,7 @@ public class AccountService {
         return accountRepository.findByUsername(username);
     }
 
-    public Iterable<User> findAll() {
+    public List<User> findAllUsers() {
         return accountRepository.findAllUsers();
     }
 
@@ -98,6 +123,10 @@ public class AccountService {
         // Length of 3 or length of name if shorter than 3
         int length = Math.min(name.length(), 3);
         return name.substring(0, length);
+    }
+
+    private boolean isInvalid(String value) {
+        return value == null || value.isBlank();
     }
 
 }
