@@ -6,7 +6,8 @@ import java.util.List;
 public interface AccountRepository {
     User createAccount(User user);
     User updateAccount(User user);
-    boolean deleteAccount(Long id);
+    boolean deleteAccountById(Long id);
+    boolean deleteAccountByUsername(String username);
 
     User findById(Long id);
     User findByEmail(String email);

@@ -29,7 +29,7 @@ public class JpaAccountRepository implements AccountRepository{
     }
 
     @Override
-    public boolean deleteAccount(Long id) {
+    public boolean deleteAccountById(Long id) {
         try (EntityManager em = EMFactory.getEntityManager()) {
             em.getTransaction().begin();
             User user = em.find(User.class, id);
@@ -41,6 +41,15 @@ public class JpaAccountRepository implements AccountRepository{
             em.getTransaction().rollback();
             return false;
         }
+    }
+
+    @Override
+    public boolean deleteAccountByUsername(String username) {
+        User user = findByUsername(username);
+        if (user != null) {
+            return deleteAccountById(user.getUserId());
+        }
+        return false;
     }
 
     @Override
