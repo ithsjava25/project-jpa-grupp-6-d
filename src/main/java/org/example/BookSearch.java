@@ -37,6 +37,20 @@ public class BookSearch {
 
 
     //todo: Serch by genre
+    public List<Book> searchByGenre(EntityManager em, String query) {
+        if (query == null || query.isBlank()) return List.of();
+
+        return em.createQuery("""
+            SELECT DISTINCT b
+            FROM Book b
+            JOIN b.genres g
+            WHERE LOWER(g.genreName) LIKE LOWER(:q)
+            ORDER BY b.title
+            """, Book.class)
+            .setParameter("q", "%" + query.trim() + "%")
+            .getResultList();
+    }
+
 }
 
 
