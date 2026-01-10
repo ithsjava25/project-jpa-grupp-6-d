@@ -47,4 +47,14 @@ public class UserIT {
         assertThat(userService.findById(testUser.getUserId())).isNull();
     }
 
+    @Test
+    void handlingUsernameCollisions() {
+        // Make sure the database can handle two users with the same username
+        userService.createUser("Tester", "Testsson", "test@test.com", "assword");
+        User user2 = userService.createUser("Testor", "Testarn", "testing@testing.com", "assword");
+
+        // Make sure the second user got a different username than the first
+        assertThat(user2.getUsername()).isEqualTo("testes1");
+    }
+
 }
