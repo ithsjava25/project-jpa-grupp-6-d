@@ -5,6 +5,7 @@ import org.example.user.UserService;
 import org.example.user.repository.UserRepository;
 import org.example.user.repository.JpaUserRepository;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,6 +56,14 @@ public class UserIT {
 
         // Make sure the second user got a different username than the first
         assertThat(user2.getUsername()).isEqualTo("testes1");
+    }
+
+    @Test
+    void throwExceptionWhenDuplicateEmails() {
+        userService.createUser("Tester", "Testsson", "test@test.com", "assword");
+
+        assertThatThrownBy(() -> userService.createUser("Testor", "Testarn", "test@test.com", "assword"))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
 }
