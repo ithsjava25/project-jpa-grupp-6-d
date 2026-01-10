@@ -1,6 +1,7 @@
-package org.example;
+package org.example.account;
 
-import org.example.repository.AccountRepository;
+import org.example.User;
+import org.example.account.repository.AccountRepository;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -8,9 +9,9 @@ import java.util.regex.Pattern;
 // Account business logic
 public class AccountService {
 
-    static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;

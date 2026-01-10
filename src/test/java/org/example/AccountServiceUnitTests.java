@@ -1,6 +1,7 @@
 package org.example;
 
-import org.example.repository.AccountRepository;
+import org.example.account.AccountService;
+import org.example.account.repository.AccountRepository;
 
 import org.junit.jupiter.api.*;
 
@@ -12,6 +13,10 @@ import static org.mockito.Mockito.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+/* *********************************** */
+/* **** AccountService Unit Tests **** */
+/* *********************************** */
 
 class AccountServiceUnitTests {
 

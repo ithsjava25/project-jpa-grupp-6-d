@@ -1,4 +1,4 @@
-package org.example.repository;
+package org.example.account.repository;
 
 import org.example.User;
 import java.util.List;
