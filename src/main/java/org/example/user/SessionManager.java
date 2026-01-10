@@ -1,4 +1,4 @@
-package org.example.account;
+package org.example.user;
 
 import org.example.User;
 

@@ -1,4 +1,4 @@
-package org.example.account.repository;
+package org.example.user.repository;
 
 import jakarta.persistence.EntityManager;
 import org.example.EMFactory;
@@ -6,10 +6,10 @@ import org.example.User;
 
 import java.util.List;
 
-public class JpaAccountRepository implements AccountRepository{
+public class JpaUserRepository implements UserRepository {
 
     @Override
-    public User createAccount(User user) {
+    public User createUser(User user) {
         try (EntityManager em = EMFactory.getEntityManager()) {
             em.getTransaction().begin();
             em.persist(user);
@@ -19,7 +19,7 @@ public class JpaAccountRepository implements AccountRepository{
     }
 
     @Override
-    public User updateAccount(User user) {
+    public User updateUser(User user) {
         try (EntityManager em = EMFactory.getEntityManager()) {
             em.getTransaction().begin();
             User updatedUser = em.merge(user);
@@ -29,7 +29,7 @@ public class JpaAccountRepository implements AccountRepository{
     }
 
     @Override
-    public boolean deleteAccountById(Long id) {
+    public boolean deleteUserById(Long id) {
         try (EntityManager em = EMFactory.getEntityManager()) {
             em.getTransaction().begin();
             User user = em.find(User.class, id);
@@ -44,10 +44,10 @@ public class JpaAccountRepository implements AccountRepository{
     }
 
     @Override
-    public boolean deleteAccountByUsername(String username) {
+    public boolean deleteUserByUsername(String username) {
         User user = findByUsername(username);
         if (user != null) {
-            return deleteAccountById(user.getUserId());
+            return deleteUserById(user.getUserId());
         }
         return false;
     }
