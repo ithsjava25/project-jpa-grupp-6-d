@@ -1,0 +1,26 @@
+package org.example.account;
+
+import org.example.User;
+
+public class SessionManager {
+    private static User currentUser = null;
+
+    // Log in user by setting currentUser to the passed in user
+    private static void login(User user) {
+        currentUser = user;
+    }
+
+    // Log out user by setting currentUser to null
+    private static void logout() {
+        currentUser = null;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    // Returns true if a user is logged in
+    public static boolean isLoggedIn() {
+        return currentUser != null;
+    }
+}
