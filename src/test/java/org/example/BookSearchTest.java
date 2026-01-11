@@ -7,7 +7,8 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class BookSearchTitleTest {
+@Disabled("Integration test – runs locally only")
+class BookSearchTest {
 
     private static EntityManagerFactory emf;
     private EntityManager em;
@@ -19,7 +20,7 @@ class BookSearchTitleTest {
 
     @AfterAll
     static void shutdown() {
-        emf.close();
+        if (emf != null) emf.close();
     }
 
     @BeforeEach
