@@ -6,12 +6,12 @@ public class SessionManager {
     private static User currentUser = null;
 
     // Log in user by setting currentUser to the passed in user
-    private static void login(User user) {
+    public static void login(User user) {
         currentUser = user;
     }
 
     // Log out user by setting currentUser to null
-    private static void logout() {
+    public static void logout() {
         currentUser = null;
     }
 
