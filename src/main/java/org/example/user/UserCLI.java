@@ -19,7 +19,9 @@ public class UserCLI {
 
         boolean closeMenu = false;
         while (!closeMenu) {
-            System.out.println("\n1. Logga in\n2. Skapa konto\n3. Tillbaka");
+            System.out.println(appName());
+            System.out.println("Konto\n=========================================================");
+            System.out.println("1. Logga in  |  2. Skapa konto  |  3. Tillbaka");
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
             switch (choice) {
@@ -42,13 +44,16 @@ public class UserCLI {
 
         boolean closeMenu = false;
         while (!closeMenu) {
-            System.out.println("\n1. Uppdatera användare\n2. Radera användare\n3. Tillbaka");
+            System.out.println(appName());
+            System.out.println("Hantera användare\n=========================================================");
+            System.out.println("1. Uppdatera användare  |  2. Radera användare  |  3. Logga ut  |  4. Tillbaka");
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1" -> updateUserMenu();
                 case "2" -> deleteUser();
-                case "3" -> closeMenu = true;
+                case "3" -> logout();
+                case "4" -> closeMenu = true;
                 default -> System.out.println("Ogiltigt val.");
             }
         }
@@ -62,12 +67,12 @@ public class UserCLI {
 
         while (!success) {
             try {
-                System.out.println("************************\n******* LOGGA IN *******\n************************");
-                // Ask for credentials
-                System.out.print("Användarnamn: ");
-                String username = scanner.nextLine();
-                System.out.print("Lösenord: ");
-                String password = scanner.nextLine();
+                System.out.println(appName());
+                System.out.println("Logga in\n=========================================================");
+                System.out.println("(Skriv 'avbryt' för att avbryta inloggningen)");
+                // Ask for credentials, prompt to enable exiting from menu
+                String username = prompt("Användarnamn: ");
+                String password = prompt("Lösenord: ");
 
                 // Check credentials with database
                 User user = userService.login(username, password);
@@ -76,15 +81,24 @@ public class UserCLI {
                 SessionManager.login(user);
 
                 if (SessionManager.isLoggedIn()){
-                    System.out.println("Inloggningen lyckades! Välkommen " + user.getFirstName());
+                    System.out.println("Inloggningen lyckades. Välkommen " + user.getFirstName() + "!");
                     success = true;
                 }
                 else {
                     System.out.println("Inloggningen misslyckades.");
                 }
-
-            } catch (IllegalArgumentException e) {
+            }
+            // Catch validation errors
+            catch (IllegalArgumentException e) {
                 System.out.println("Felmeddelande: " + e.getMessage());
+            }
+            // Catch our "exit" exception"
+            catch (RuntimeException e){
+                if (e.getMessage().equals("AVBRUTET")) {
+                    return;
+                }
+                // Catch any other exceptions
+                throw e;
             }
         }
     }
@@ -102,14 +116,14 @@ public class UserCLI {
 
         while (!success) {
             try {
-                System.out.println("*************************\n**** SKAPA ANVÄNDARE ****\n*************************");
-                System.out.print("Förnamn: ");
-                String firstName = scanner.nextLine();
-                System.out.print("Efternamn: ");
-                String lastName = scanner.nextLine();
-                System.out.print("Email: ");
-                String email = scanner.nextLine();
-                String password = scanner.nextLine();
+                System.out.println(appName());
+                System.out.println("Skapa användare\n=========================================================");
+                System.out.println("(Skriv 'avbryt' för att avbryta skapandet av ny användare)");
+
+                String firstName = prompt("Förnamn: ");
+                String lastName = prompt("Efternamn: ");
+                String email = prompt("Email: ");
+                String password = prompt("Lösenord: ");
 
                 // Create user
                 User user = userService.createUser(firstName, lastName, email, password);
@@ -117,8 +131,18 @@ public class UserCLI {
                 System.out.println("Välkommen " + user.getFirstName() + "!");
                 System.out.println("Ditt användarnamn är: " + user.getUsername());
                 success = true;
-            } catch (IllegalArgumentException e) {
+            }
+            // Catch validation errors
+            catch (IllegalArgumentException e) {
                 System.out.println("Felmeddelande: " + e.getMessage());
+            }
+            // Catch our "exit" exception"
+            catch (RuntimeException e){
+                if (e.getMessage().equals("AVBRUTET")) {
+                    return;
+                }
+                // Catch any other exceptions
+                throw e;
             }
         }
     }
@@ -128,22 +152,32 @@ public class UserCLI {
         if (!SessionManager.isLoggedIn()) return;
 
         User currentUser = SessionManager.getCurrentUser();
+
         try {
-            System.out.println("*************************\n**** UPPDATERA ANVÄNDARE ****\n*************************");
-            System.out.print("Nytt förnamn [" + currentUser.getFirstName() + "]: ");
-            String firstName = scanner.nextLine();
-            System.out.print("Nytt efternamn [" + currentUser.getLastName() + "]: ");
-            String lastName = scanner.nextLine();
-            System.out.print("Ny email [" + currentUser.getEmail() + "]: ");
-            String email = scanner.nextLine();
-            System.out.print("Nytt lösenord: ");
-            String password = scanner.nextLine();
+            System.out.println(appName());
+            System.out.println("UPPDATERA ANVÄNDARE\n=========================================================");
+            System.out.println("(Skriv 'avbryt' för att avbryta uppdateringen av användaren)");
+
+            String firstName = prompt("Nytt förnamn: ");
+            String lastName = prompt("Nytt efternamn: ");
+            String email = prompt("Ny email: ");
+            String password = prompt("Nytt lösenord: ");
 
             User updatedUser = userService.updateUser(currentUser.getUserId(), firstName, lastName, email, password);
             SessionManager.login(updatedUser); // Update session with new user
             System.out.println("Användaren har uppdaterats!");
-        } catch (IllegalArgumentException e) {
+        }
+        // Catch validation errors
+        catch (IllegalArgumentException e) {
             System.out.println("Kunde inte uppdatera: " + e.getMessage());
+        }
+        // Catch our "exit" exception"
+        catch (RuntimeException e){
+            if (e.getMessage().equals("AVBRUTET")) {
+                return;
+            }
+            // Catch any other exceptions
+            throw e;
         }
     }
 
@@ -156,6 +190,25 @@ public class UserCLI {
             userService.deleteUserById(SessionManager.getCurrentUser().getUserId());
             SessionManager.logout();
             System.out.println("Kontot har raderats och du har loggats ut.");
+        } else {
+            System.out.println("Du har valt att behålla kontot.");
         }
     }
+
+    // Method to enable user to exit menu
+    private String prompt(String message) {
+        // Print the passed argument
+        System.out.print(message);
+        String input = scanner.nextLine();
+        // Exit from current menu if "avbryt" is entered
+        if (input.equalsIgnoreCase("avbryt")) {
+            throw new RuntimeException("AVBRUTET");
+        }
+        return input;
+    }
+
+    private String appName() {
+        return "\n\nBIBLIOTEKSSYSTEMET";
+    }
+
 }
