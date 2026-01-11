@@ -22,12 +22,12 @@ public class UserService {
 
         // Check if a user was found
         if (user == null) {
-            throw new IllegalArgumentException("Couldn't find user with username " + username);
+            throw new IllegalArgumentException("Kunde inte hitta användarnamn: " + username);
         }
 
         // Check if the password is correct
         if (!user.getPassword().equals(password) ) {
-            throw new IllegalArgumentException("Invalid password");
+            throw new IllegalArgumentException("Ogiltigt lösenord");
         }
 
         return user;
@@ -72,7 +72,7 @@ public class UserService {
 
         // Check if a user was found
         if (user == null) {
-            throw new IllegalArgumentException("Couldn't find user with id " + id);
+            throw new IllegalArgumentException("Kunde inte hitta användare med id: " + id);
         }
 
         // Update user

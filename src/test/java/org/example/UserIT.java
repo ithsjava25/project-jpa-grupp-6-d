@@ -7,6 +7,7 @@ import org.example.user.repository.JpaUserRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,9 +21,18 @@ public class UserIT {
     private final UserRepository userRepository = new JpaUserRepository();
     private final UserService userService = new UserService(userRepository);
 
-    // Makes sure we start with a clean slate after each test
+    // Makes sure we start with a clean slate before/after each test
+    @BeforeEach
+    void setUp() {
+        cleanDatabase();
+    }
+
     @AfterEach
-    void deleteAllUsersAfterEachTest() {
+    void tearDown() {
+        cleanDatabase();
+    }
+
+    private void cleanDatabase() {
         try (EntityManager em = EMFactory.getEntityManager()) {
             em.getTransaction().begin();
             em.createQuery("DELETE FROM User").executeUpdate();

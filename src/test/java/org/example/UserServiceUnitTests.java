@@ -31,7 +31,7 @@ class UserServiceUnitTests {
 
         assertThatThrownBy(() -> userService.login("wronguser", "a$$word"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Couldn't find user with username wronguser");
+            .hasMessageContaining("Kunde inte hitta användarnamn: ");
     }
 
     @Test
@@ -51,7 +51,7 @@ class UserServiceUnitTests {
         // Test login with wrong password
         assertThatThrownBy(() -> userService.login("testuser", "wrongPassword"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Invalid password");
+            .hasMessageContaining("Ogiltigt lösenord");
     }
 
     @Test
@@ -105,7 +105,7 @@ class UserServiceUnitTests {
         assertThatThrownBy(() ->
             userService.createUser("Test", "User", "invalidemail", "a$$word"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Invalid email format");
+            .hasMessageContaining("Ogiltigt emailformat.");
     }
 
     @Test
@@ -116,7 +116,7 @@ class UserServiceUnitTests {
         assertThatThrownBy(() ->
             userService.createUser("Test", "User", "test@test.com", "12"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Password must be at least 3 characters long");
+            .hasMessageContaining("Lösenordet måste vara minst 3 karaktärer långt.");
     }
 
     @Test
@@ -127,7 +127,7 @@ class UserServiceUnitTests {
         assertThatThrownBy(() ->
             userService.createUser("", "User", "test@test.com", "a$$word"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("No fields can be empty");
+            .hasMessageContaining("Inga fält får lämnas tomma.");
     }
 
     @Test
@@ -141,7 +141,7 @@ class UserServiceUnitTests {
         assertThatThrownBy(() ->
             userService.createUser("Test", "User", "test@test.com", "a$$word"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("A user with this email already exists");
+            .hasMessageContaining("En användare med denna emailadress finns redan.");
     }
 
     @Test
