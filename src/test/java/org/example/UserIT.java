@@ -63,7 +63,7 @@ public class UserIT {
     }
 
     @Test
-    void throwExceptionWhenDuplicateEmails() {
+    void throwsExceptionWhenDuplicateEmails() {
         userService.createUser("Tester", "Testsson", "test@test.com", "assword");
 
         assertThatThrownBy(() ->
@@ -84,6 +84,7 @@ public class UserIT {
             .isEqualTo("testes");
     }
 
+    // Make sure JPQL works correctly when searching for a user by username
     @Test
     void findUserByUsername(){
         userService.createUser("Tester", "Testsson", "test@test.com", "assword");
@@ -94,5 +95,11 @@ public class UserIT {
             .isNotNull();
         assertThat(foundUser.getFirstName())
             .isEqualTo("Tester");
+    }
+
+    @Test
+    void receiveFalseWhenDeletingWrongUser() {
+        boolean result = userService.deleteUserById(1337L);
+        assertThat(result).isFalse();
     }
 }
