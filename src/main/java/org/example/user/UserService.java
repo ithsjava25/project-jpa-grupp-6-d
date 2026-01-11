@@ -36,22 +36,22 @@ public class UserService {
     public User createUser(String firstName, String lastName, String email, String password) {
         // Check for null or empty
         if (isInvalid(firstName) || isInvalid(lastName) || isInvalid(email) || isInvalid(password)) {
-            throw new IllegalArgumentException("No fields can be empty.");
+            throw new IllegalArgumentException("Inga fält får lämnas tomma.");
         }
 
         // Validate email with regex pattern
         if (!EMAIL_PATTERN.matcher(email).matches()) {
-            throw new IllegalArgumentException("Invalid email format.");
+            throw new IllegalArgumentException("Ogiltigt emailformat.");
         }
 
         // Validate password length
         if (password.length() < 3) {
-            throw new IllegalArgumentException("Password must be at least 3 characters long.");
+            throw new IllegalArgumentException("Lösenordet måste vara minst 3 karaktärer långt.");
         }
 
         // Check for existing email
         if (userRepository.findByEmail(email) != null) {
-            throw new IllegalArgumentException("A user with this email already exists.");
+            throw new IllegalArgumentException("En användare med denna emailadress finns redan.");
         }
 
         // Generate username
