@@ -34,18 +34,22 @@ public class UserIT {
         // Create a new user in the database
         User testUser = userService.createUser("Tester", "Testsson", "test@test.com", "assword");
         // Make sure a user was created and returned
-        assertThat(userService.login(testUser.getUsername(), "assword")).isNotNull();
+        assertThat(userService.login(testUser.getUsername(), "assword"))
+            .isNotNull();
 
         // Update user in database
         testUser = userService.updateUser(testUser.getUserId(), "Testor", "Nytest", "nytest@nytest.com", "newPassword");
         // Make sure the user was updated in the database
-        assertThat(userService.findById(testUser.getUserId()).getFirstName()).isEqualTo("Testor");
+        assertThat(userService.findById(testUser.getUserId()).getFirstName())
+            .isEqualTo("Testor");
 
         // Remove user from database
         boolean deleted = userService.deleteUserById(testUser.getUserId());
         // Make sure the user was deleted from the database
-        assertThat(deleted).isTrue();
-        assertThat(userService.findById(testUser.getUserId())).isNull();
+        assertThat(deleted)
+            .isTrue();
+        assertThat(userService.findById(testUser.getUserId()))
+            .isNull();
     }
 
     @Test
@@ -62,8 +66,21 @@ public class UserIT {
     void throwExceptionWhenDuplicateEmails() {
         userService.createUser("Tester", "Testsson", "test@test.com", "assword");
 
-        assertThatThrownBy(() -> userService.createUser("Testor", "Testarn", "test@test.com", "assword"))
+        assertThatThrownBy(() ->
+            userService.createUser("Testor", "Testarn", "test@test.com", "assword"))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
+    // Make sure JPQL works correctly when searching for a user by email
+    @Test
+    void findUserByEmail() {
+        userService.createUser("Tester", "Testsson", "test@test.com", "assword");
+
+        User foundUser = userService.findByEmail("test@test.com");
+
+        assertThat(foundUser)
+            .isNotNull();
+        assertThat(foundUser.getUsername())
+            .isEqualTo("testes");
+    }
 }
