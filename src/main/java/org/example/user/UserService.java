@@ -22,7 +22,7 @@ public class UserService {
 
         // Check if a user was found
         if (user == null) {
-            throw new IllegalArgumentException("Kunde inte hitta användarnamn: " + username);
+            throw new IllegalArgumentException("Kunde inte hitta användarnamn \"" + username + "\"");
         }
 
         // Check if the password is correct
