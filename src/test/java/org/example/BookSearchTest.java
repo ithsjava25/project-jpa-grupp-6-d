@@ -31,4 +31,13 @@ class BookSearchTitleTest {
     void tearDown() {
         em.close();
     }
+// test - search by title funkar utan error
+    @Test
+    void searchByTitle_executes_without_error() {
+        BookSearch search = new BookSearch();
+
+        var result = search.searchByTitle(em, "a");
+
+        assertNotNull(result);
+    }
 }
