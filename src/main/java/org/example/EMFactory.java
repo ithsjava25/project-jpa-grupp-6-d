@@ -7,6 +7,9 @@ import jakarta.persistence.Persistence;
 public class EMFactory {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("library_system");
 
+    // To block instantiation
+    private EMFactory(){}
+
     public static void init(){
         // Call this once to initialize the factory att app start
     }
@@ -19,6 +22,8 @@ public class EMFactory {
 
     // Close the factory
     public static void close() {
-        emf.close();
+        if (emf.isOpen()){
+            emf.close();
+        }
     }
 }
