@@ -4,11 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-public class EMFactory {
+public class EMFactory implements AutoCloseable {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("library_system");
-
-    // To block instantiation
-    private EMFactory(){}
 
     public static void init(){
         // Call this once to initialize the factory att app start
@@ -21,8 +18,9 @@ public class EMFactory {
 
 
     // Close the factory
-    public static void close() {
-        if (emf.isOpen()){
+    @Override
+    public void close() {
+        if (emf != null && emf.isOpen()) {
             emf.close();
         }
     }
