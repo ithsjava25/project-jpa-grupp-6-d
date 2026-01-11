@@ -19,6 +19,13 @@ public class SessionManager {
         return currentUser;
     }
 
+    public static String loggedInDisplayName() {
+        if (currentUser != null)
+            return currentUser.getDisplayName();
+        else
+            return "Gäst";
+    }
+
     // Returns true if a user is logged in
     public static boolean isLoggedIn() {
         return currentUser != null;
