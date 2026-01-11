@@ -20,13 +20,13 @@ public class SeedData {
         int saved = 0;
 
         try {
-            System.out.println("Seeding startar...");
+            System.out.println("Starta seeding");
 
             tx.begin();
 
             InputStream is = SeedData.class.getResourceAsStream("/seed-books.tsv");
             if (is == null) {
-                throw new IllegalStateException("Hittar inte resursfilen /seed-books.tsv. Ligger den i src/main/resources?");
+                throw new IllegalStateException("Hittar inte tsv-fil");
             }
 
             try (BufferedReader br = new BufferedReader(
@@ -105,7 +105,7 @@ public class SeedData {
             }
 
             tx.commit();
-            System.out.println("Seed klart (Saved=" + saved + ")");
+            System.out.println("Seeding klart (Saved=" + saved + ")");
 
         } catch (Exception e) {
             System.err.println("Seeding misslyckades: " + e.getMessage());
@@ -113,7 +113,7 @@ public class SeedData {
 
             if (tx.isActive()) {
                 tx.rollback();
-                System.err.println("Rollback utförd 🔁");
+                System.err.println("Rollback");
             }
 
         } finally {
