@@ -62,6 +62,14 @@ public class User {
         this.firstName = firstName;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    public String getDisplayName() {
+        return getFullName() + " (" + username + ")";
+    }
+
     public Long getUserId() {
         return userId;
     }
