@@ -36,17 +36,25 @@ class BookSearchTitleTest {
     void searchByTitle_executes_without_error() {
         BookSearch search = new BookSearch();
 
-        var result = search.searchByTitle(em, "a");
+        var resultTitle = search.searchByTitle(em, "a");
 
-        assertNotNull(result);
+        assertNotNull(resultTitle);
     }
 // test- search by author funkar utan att få error
     @Test
     void searchByAuthor_executes_without_error() {
         BookSearch search = new BookSearch();
 
-        var result = search.searchByAuthor(em, "a");
+        var resultAuthor = search.searchByAuthor(em, "b");
 
-        assertNotNull(result);
+        assertNotNull(resultAuthor);
+    }
+
+    // test - search by genre om funkar utan error
+    @Test
+    void searchByGenre_executes_without_error(){
+        BookSearch search = new BookSearch();
+        var resultGenre = search.searchByGenre(em,"c");
+        assertNotNull(resultGenre);
     }
 }
