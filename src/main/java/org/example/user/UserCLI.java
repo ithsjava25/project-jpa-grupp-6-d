@@ -18,7 +18,7 @@ public class UserCLI {
         if (SessionManager.isLoggedIn()) return;
 
         boolean closeMenu = false;
-        while (!closeMenu) {
+        while (!closeMenu && !SessionManager.isLoggedIn()) {
             System.out.println(appName());
             System.out.println("Konto\n=========================================================");
             System.out.println("1. Logga in  |  2. Skapa konto  |  3. Tillbaka");
@@ -43,7 +43,7 @@ public class UserCLI {
         if (!SessionManager.isLoggedIn()) return;
 
         boolean closeMenu = false;
-        while (!closeMenu) {
+        while (!closeMenu && SessionManager.isLoggedIn()) {
             System.out.println(appName());
             System.out.println("Hantera användare\n=========================================================");
             System.out.println("1. Uppdatera användare  |  2. Radera användare  |  3. Logga ut  |  4. Tillbaka");
@@ -63,9 +63,7 @@ public class UserCLI {
         // Make sure user is not already logged in
         if (SessionManager.isLoggedIn()) return;
 
-        boolean success = false;
-
-        while (!success) {
+        while (!SessionManager.isLoggedIn()) {
             try {
                 System.out.println(appName());
                 System.out.println("Logga in\n=========================================================");
@@ -82,7 +80,6 @@ public class UserCLI {
 
                 if (SessionManager.isLoggedIn()){
                     System.out.println("Inloggningen lyckades. Välkommen " + user.getFirstName() + "!");
-                    success = true;
                 }
                 else {
                     System.out.println("Inloggningen misslyckades.");
