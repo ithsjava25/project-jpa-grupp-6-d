@@ -83,4 +83,16 @@ public class UserIT {
         assertThat(foundUser.getUsername())
             .isEqualTo("testes");
     }
+
+    @Test
+    void findUserByUsername(){
+        userService.createUser("Tester", "Testsson", "test@test.com", "assword");
+
+        User foundUser = userService.findByUsername("testes");
+
+        assertThat(foundUser)
+            .isNotNull();
+        assertThat(foundUser.getFirstName())
+            .isEqualTo("Tester");
+    }
 }
