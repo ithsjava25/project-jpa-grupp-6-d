@@ -9,6 +9,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 /* *********************************** */
 /* **** User integration tests **** */
 /* *********************************** */
@@ -101,5 +103,16 @@ public class UserIT {
     void receiveFalseWhenDeletingWrongUser() {
         boolean result = userService.deleteUserById(1337L);
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldFindAllUsers() {
+        userService.createUser("Tester", "Testsson", "test@test.com", "assword");
+        userService.createUser("Testor", "Testarn", "testing@testing.com", "assword");
+
+        List<User> users = userService.findAllUsers();
+
+        assertThat(users)
+            .hasSize(2);
     }
 }
