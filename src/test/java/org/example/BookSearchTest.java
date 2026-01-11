@@ -40,4 +40,13 @@ class BookSearchTitleTest {
 
         assertNotNull(result);
     }
+// test- search by author funkar utan att få error
+    @Test
+    void searchByAuthor_executes_without_error() {
+        BookSearch search = new BookSearch();
+
+        var result = search.searchByAuthor(em, "a");
+
+        assertNotNull(result);
+    }
 }
