@@ -1,5 +1,6 @@
 package org.example;
 
+import jakarta.persistence.EntityManager;
 import org.example.user.SessionManager;
 import org.example.user.UserCLI;
 import org.example.user.UserService;
@@ -35,10 +36,10 @@ public class App {
             } else {
                 System.out.println("1. Sök bok  |  2. Logga in/Skapa konto  |  0. Avsluta");
             }
-
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
-            LoanServices loanServices = new LoanServices(EMFactory.getEntityManager());
+
+            LoanServices loanServices = new LoanServices();
             switch (choice) {
                 case "1" -> {
                     searchCli.bookSearchCli();
@@ -54,37 +55,46 @@ public class App {
                     if (SessionManager.isLoggedIn()) userCli.logout();
                 }
                 case "4" -> {
-                    List<Loan> loans = loanServices.activeLoans(SessionManager.getCurrentUser());
+                    // Block guests from accessing loans
+                    if (!SessionManager.isLoggedIn()) {
+                        System.out.println("Du måste vara inloggad för att se lån.");
+                        continue;
+                    }
 
-                    boolean running = true;
-                    while (running) {
-                        if (!loans.isEmpty()) {
-                            System.out.println("Dina aktiva lån:");
-                            int counter = 0;
-                            for (Loan loan : loans) {
-                                counter += 1;
-                                System.out.println(counter + ". Titel: " + loan.getBook().getTitle() + " - Åter: " + loan.getReturnDate()
-                                    .format(formatter));
-                            }
-                            System.out.println("Välj nummer för den bok du vill lämna tillbaka (0 = tillbaka): ");
-                            String inputString = scanner.nextLine();
-                            Integer input = Integer.parseInt(inputString);
-                            if (input >= 1 && input <= loans.size()) {
-                                loanServices.returnBook(
-                                    SessionManager.getCurrentUser(),
-                                    loans.get(input - 1).getBook()
-                                );
-                                loans.remove(input - 1);
-                                System.out.println("Du har lämnat tillbaka din bok!");
-                            } else if (input == 0) {
-                                running = false;
+                    try (EntityManager em = EMFactory.getEntityManager()) {
+                        List<Loan> loans = loanServices.activeLoans(SessionManager.getCurrentUser(), em);
+
+                        boolean running = true;
+                        while (running) {
+                            if (!loans.isEmpty()) {
+                                System.out.println("Dina aktiva lån:");
+                                int counter = 0;
+                                for (Loan loan : loans) {
+                                    counter += 1;
+                                    System.out.println(counter + ". Titel: " + loan.getBook().getTitle() + " - Åter: " + loan.getReturnDate()
+                                        .format(formatter));
+                                }
+                                System.out.println("Välj nummer för den bok du vill lämna tillbaka (0 = tillbaka): ");
+                                String inputString = scanner.nextLine();
+                                Integer input = Integer.parseInt(inputString);
+                                if (input >= 1 && input <= loans.size()) {
+                                    loanServices.returnBook(
+                                        SessionManager.getCurrentUser(),
+                                        loans.get(input - 1).getBook(),
+                                        em
+                                    );
+                                    loans.remove(input - 1);
+                                    System.out.println("Du har lämnat tillbaka din bok!");
+                                } else if (input == 0) {
+                                    running = false;
+                                } else {
+                                    System.out.println("ogiltigt val.");
+                                }
+
                             } else {
-                                System.out.println("ogiltigt val.");
+                                System.out.println("Inga aktiva lån.");
+                                running = false;
                             }
-
-                        } else {
-                            System.out.println("Inga aktiva lån.");
-                            running = false;
                         }
                     }
                 }
