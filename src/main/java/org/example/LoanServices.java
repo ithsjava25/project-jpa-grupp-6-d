@@ -46,4 +46,28 @@ public class LoanServices {
         em.persist(loan);
         return true;
     }
+
+    public boolean returnBook(User user, Book book) {
+
+        Loan loan = em.createQuery(
+            "SELECT l FROM Loan l WHERE l.user = :user AND l.book = :book AND l.returnDate IS NULL",
+            Loan.class
+        )
+            .setParameter("user", user)
+            .setParameter("book", book)
+            .getResultStream()
+            .findFirst()
+            .orElse(null);
+
+        if (loan == null) {
+            return false;
+        }
+
+        em.getTransaction().begin();
+
+        loan.setReturnDate(ZonedDateTime.now());
+        book.setLoan(null);
+        em.getTransaction().commit();
+        return true;
+    }
 }
