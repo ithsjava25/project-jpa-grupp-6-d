@@ -56,12 +56,12 @@ public class App {
                     if (SessionManager.isLoggedIn()) userCli.logout();
                 }
                 case "4" -> {
-                    System.out.println("Dina aktiva lån:");
                     List<Loan> loans = loanServices.activeLoans(SessionManager.getCurrentUser());
 
                     boolean running = true;
                     while (running) {
                         if (!loans.isEmpty()) {
+                            System.out.println("Dina aktiva lån:");
                             int counter = 0;
                             for (Loan loan : loans) {
                                 counter += 1;
