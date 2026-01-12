@@ -3,6 +3,7 @@ package org.example;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.example.user.SessionManager;
 
 import java.util.List;
 import java.util.Scanner;
@@ -118,7 +119,6 @@ public class SearchCli {
         System.out.println("Författare: " + formatAuthors(b));
         System.out.println("Genre: " + formatGenres(b));
         System.out.println("Utgiven: " + b.getPublishYear());
-        System.out.println("Låna bok");
 
         String desc = b.getDescription();
         if (desc == null || desc.isBlank()) desc = "(Ingen beskrivning)";
@@ -128,10 +128,36 @@ public class SearchCli {
             System.out.println("Status: Utlånad");
         } else {
             System.out.println("Status: Tillgänglig");
+
+            boolean isLoggedIn = SessionManager.isLoggedIn();
+            boolean isRunning = true;
+
+            if (isLoggedIn){
+                while (isRunning) {
+                    System.out.println("1. Låna bok | 2. Tillbaka");
+                    String choice = sc.nextLine();
+
+                    switch (choice) {
+                        case "1" -> {
+                            loanServices.loanBook(SessionManager.getCurrentUser(), b);
+                            isRunning = false;
+                            System.out.println("Du har nu lånat boken!");
+                        }
+
+                        case "2" -> {
+                            isRunning = false;
+                        }
+                        default -> System.out.println("Ogiltigt val, försök igen.");
+                    }
+                }
+            }
         }
 
+//        boolean isLoggedIn = SessionManager.isLoggedIn();
+//        User user = SessionManager.getCurrentUser();
+//        user.getUserId();
+
         //todo:
-        // Status på boken: tillgänglig/utlånad
         // om tillgänglig och inloggad - låna bok
             // om ej inloggad - skicka till logga in sidan.
 

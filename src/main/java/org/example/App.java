@@ -29,7 +29,7 @@ public class App {
             System.out.println("========================================================");
 
             if (SessionManager.isLoggedIn()) {
-                System.out.println("1. Sök bok  |  2. Hantera användare  |  3. Logga ut |  0. Avsluta");
+                System.out.println("1. Sök bok  |  2. Mina lån |  3. Hantera användare  |  4. Logga ut |  0. Avsluta");
             } else {
                 System.out.println("1. Sök bok  |  2. Logga in/Skapa konto  |  0. Avsluta");
             }
@@ -41,10 +41,13 @@ public class App {
                     searchCli.bookSearchCli();
                 }
                 case "2" -> {
+
+                }
+                case "3" -> {
                     if (SessionManager.isLoggedIn()) userCli.manageUserMenu();
                     else userCli.userMenu();
                 }
-                case "3" -> {
+                case "4" -> {
                     if (SessionManager.isLoggedIn()) userCli.logout();
                 }
                 case "0" -> appRunning = false;
