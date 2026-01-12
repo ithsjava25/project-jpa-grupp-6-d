@@ -15,7 +15,7 @@ public class LoanServices {
     public boolean isBookLoaned(Long bookId) {
 
         List<Loan> loans = em.createQuery(
-            "SELECT l FROM Loan l WHERE l.bookId = :bookId AND l.returnDate IS NULL",
+            "SELECT l FROM Loan l WHERE l.book.bookId = :bookId AND l.returnDate IS NULL",
             Loan.class
         )
         .setParameter("bookId", bookId)
