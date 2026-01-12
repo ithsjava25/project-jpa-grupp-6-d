@@ -12,7 +12,7 @@ public final class EMFactory {
     }
 
     public static void init(){
-        // Call this once to initialize the factory att app start
+        // Call this once to initialize the factory at app start
     }
 
     // Use this in try-with
@@ -22,8 +22,8 @@ public final class EMFactory {
 
 
     // Close the factory
-    public void close() {
-        if (emf != null && emf.isOpen()) {
+    public static void close() {
+        if (emf.isOpen()) {
             emf.close();
         }
     }
