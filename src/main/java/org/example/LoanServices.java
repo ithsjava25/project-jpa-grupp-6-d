@@ -6,15 +6,8 @@ import java.util.List;
 
 public class LoanServices {
 
-    private final EntityManager em;
-
-    public LoanServices(EntityManager em) {
-        this.em = em;
-    }
-
     // Kolla om en bok är utlånad
-    public boolean isBookLoaned(Long bookId) {
-
+    public boolean isBookLoaned(Long bookId, EntityManager em) {
         List<Loan> loans = em.createQuery(
             "SELECT l FROM Loan l WHERE l.book.bookId = :bookId AND l.returnDate IS NOT NULL",
             Loan.class
@@ -22,65 +15,79 @@ public class LoanServices {
         .setParameter("bookId", bookId)
             .getResultList();
 
-        if (loans.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !loans.isEmpty();
     }
 
     // Låna en bok
-    public boolean loanBook(User user, Book book) {
+    public boolean loanBook(User user, Book book, EntityManager em) {
 
-        if (isBookLoaned(book.getId())) {
+        if (isBookLoaned(book.getId(), em)) {
             return false;
         }
 
-        em.getTransaction().begin();
+        try {
+            em.getTransaction().begin();
+            // Makes sure JPA knows about the user
+            User managedUser = em.merge(user);
+            Book managedBook = em.merge(book);
 
-        Book managedBook = em.merge(book);
+            Loan loan = new Loan();
+            loan.setUser(managedUser);
+            loan.setLoanDate(ZonedDateTime.now());
+            loan.setReturnDate(ZonedDateTime.now().plusDays(7));
+            loan.setBook(managedBook);
 
-        Loan loan = new Loan();
+            managedBook.setLoan(loan);
 
-        loan.setUser(user);
-        loan.setLoanDate(ZonedDateTime.now());
-        loan.setReturnDate(ZonedDateTime.now().plusDays((7)));
+            em.persist(loan);
+            em.getTransaction().commit();
 
-        loan.setBook(managedBook);
-        managedBook.setLoan(loan);
-        em.persist(loan);
-        em.getTransaction().commit();
-
-        return true;
+            return true;
+        } catch (Exception e) {
+            // If transactions fail but are still active, rollback
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        }
     }
 
     // Lämna tillbaka en bok
-    public boolean returnBook(User user, Book book) {
+    public boolean returnBook(User user, Book book, EntityManager em) {
 
-        Loan loan = em.createQuery(
-            "SELECT l FROM Loan l WHERE l.user = :user AND l.book = :book AND l.returnDate IS NOT NULL",
-            Loan.class
-        )
-            .setParameter("user", user)
-            .setParameter("book", book)
-            .getResultStream()
-            .findFirst()
-            .orElse(null);
+        try{
+            Loan loan = em.createQuery(
+                    "SELECT l FROM Loan l WHERE l.user = :user AND l.book = :book AND l.returnDate IS NOT NULL",
+                    Loan.class
+                )
+                .setParameter("user", user)
+                .setParameter("book", book)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
 
-        if (loan == null) {
+            if (loan == null) {
+                return false;
+            }
+
+            em.getTransaction().begin();
+            Book managedBook = loan.getBook();
+            managedBook.setLoan(null);
+            em.remove(loan);
+
+            em.getTransaction().commit();
+            return true;
+
+        } catch (Exception e) {
+            // If transactions fail but are still active, rollback
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             return false;
         }
-
-        em.getTransaction().begin();
-
-        Book managedBook = loan.getBook();
-        managedBook.setLoan(null);
-        em.remove(loan);
-        em.getTransaction().commit();
-        return true;
     }
 
-    public List<Loan> activeLoans(User user) {
+    public List<Loan> activeLoans(User user, EntityManager em) {
 
         return em.createQuery(
             "SELECT l FROM Loan l WHERE l.user = :user",
