@@ -6,7 +6,7 @@ import java.util.List;
 
 public class LoanServices {
 
-    final private EntityManager em;
+    private final EntityManager em;
 
     public LoanServices(EntityManager em) {
         this.em = em;

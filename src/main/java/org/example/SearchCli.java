@@ -104,23 +104,37 @@ public class SearchCli {
             Book selected = results.get(n - 1);
             printBookDetails(selected);
 
-            System.out.print("Tryck Enter för att gå tillbaka til sök");
+            System.out.print("Tryck Enter för att gå tillbaka till sök");
             sc.nextLine();
             return;
         }
     }
 
     private static void printBookDetails(Book b) {
+        LoanServices loanServices = new LoanServices(em);
         System.out.println("\n==============================");
         System.out.println(" " + b.getTitle());
         System.out.println("------------------------------");
         System.out.println("Författare: " + formatAuthors(b));
         System.out.println("Genre: " + formatGenres(b));
         System.out.println("Utgiven: " + b.getPublishYear());
+        System.out.println("Låna bok");
 
         String desc = b.getDescription();
         if (desc == null || desc.isBlank()) desc = "(Ingen beskrivning)";
         System.out.println("\nBeskrivning:\n" + desc);
+
+        if (loanServices.isBookLoaned(b.getId())){
+            System.out.println("Status: Utlånad");
+        } else {
+            System.out.println("Status: Tillgänglig");
+        }
+
+        //todo:
+        // Status på boken: tillgänglig/utlånad
+        // om tillgänglig och inloggad - låna bok
+            // om ej inloggad - skicka till logga in sidan.
+
         System.out.println("==============================");
     }
 
