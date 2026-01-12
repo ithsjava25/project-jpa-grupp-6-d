@@ -1,8 +1,6 @@
 package org.example;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import org.example.user.SessionManager;
 
 import java.util.List;
@@ -111,7 +109,7 @@ public class SearchCli {
     }
 
     private void printBookDetails(Book b, EntityManager em) {
-        LoanServices loanServices = new LoanServices(em);
+        LoanServices loanServices = new LoanServices();
         System.out.println("\n==============================");
         System.out.println(" " + b.getTitle());
         System.out.println("------------------------------");
@@ -123,7 +121,7 @@ public class SearchCli {
         if (desc == null || desc.isBlank()) desc = "(Ingen beskrivning)";
         System.out.println("\nBeskrivning:\n" + desc);
 
-        if (loanServices.isBookLoaned(b.getId())){
+        if (loanServices.isBookLoaned(b.getId(), em)){
             System.out.println("Status: Utlånad");
         } else {
             System.out.println("Status: Tillgänglig");
@@ -138,14 +136,11 @@ public class SearchCli {
 
                     switch (choice) {
                         case "1" -> {
-                            loanServices.loanBook(SessionManager.getCurrentUser(), b);
+                            loanServices.loanBook(SessionManager.getCurrentUser(), b, em);
                             isRunning = false;
                             System.out.println("Du har nu lånat boken!");
                         }
-
-                        case "2" -> {
-                            isRunning = false;
-                        }
+                        case "2" -> isRunning = false;
                         default -> System.out.println("Ogiltigt val, försök igen.");
                     }
                 }
