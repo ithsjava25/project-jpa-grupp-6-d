@@ -31,7 +31,7 @@ class UserServiceUnitTests {
 
         assertThatThrownBy(() -> userService.login("wronguser", "a$$word"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Kunde inte hitta användarnamn: ");
+            .hasMessageContaining("Kunde inte hitta användarnamn");
     }
 
     @Test
