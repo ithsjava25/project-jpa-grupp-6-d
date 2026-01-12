@@ -29,21 +29,25 @@ public class App {
             System.out.println("========================================================");
 
             if (SessionManager.isLoggedIn()) {
-                System.out.println("1. Sök bok  |  2. Mina lån |  3. Hantera användare  |  4. Logga ut |  0. Avsluta");
+                System.out.println("1. Sök bok  |  5. Mina lån |  3. Hantera användare  |  4. Logga ut |  0. Avsluta");
             } else {
                 System.out.println("1. Sök bok  |  2. Logga in/Skapa konto  |  0. Avsluta");
             }
 
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
+            LoanServices loanServices = new LoanServices(EMFactory.getEntityManager());
             switch (choice) {
                 case "1" -> {
                     searchCli.bookSearchCli();
                 }
-                case "2" -> {
-
+                case "5" -> {
+                    System.out.println("Dina aktiva lån:");
+                    System.out.println(loanServices.activeLoans(SessionManager.getCurrentUser()));
+                    // kunna välja att lämna tillbaka en bok
+                    //                     System.out.println("Du har lämnat tillbaka din bok!");
                 }
-                case "3" -> {
+                case "2" -> {
                     if (SessionManager.isLoggedIn()) userCli.manageUserMenu();
                     else userCli.userMenu();
                 }

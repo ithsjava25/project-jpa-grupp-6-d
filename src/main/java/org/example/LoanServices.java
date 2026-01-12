@@ -79,4 +79,14 @@ public class LoanServices {
         em.getTransaction().commit();
         return true;
     }
+
+    public List<Loan> activeLoans(User user) {
+
+        return em.createQuery(
+            "SELECT l FROM Loan l WHERE l.user = :user",
+            Loan.class
+        )
+            .setParameter("user", user)
+            .getResultList();
+    }
 }
