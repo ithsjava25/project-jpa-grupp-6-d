@@ -34,25 +34,8 @@ public class UserService {
     }
 
     public User createUser(String firstName, String lastName, String email, String password) {
-        // Check for null or empty
-        if (isInvalid(firstName) || isInvalid(lastName) || isInvalid(email) || isInvalid(password)) {
-            throw new IllegalArgumentException("Inga fält får lämnas tomma.");
-        }
 
-        // Validate email with regex pattern
-        if (!EMAIL_PATTERN.matcher(email).matches()) {
-            throw new IllegalArgumentException("Ogiltigt emailformat.");
-        }
-
-        // Validate password length
-        if (password.length() < 3) {
-            throw new IllegalArgumentException("Lösenordet måste vara minst 3 karaktärer långt.");
-        }
-
-        // Check for existing email
-        if (userRepository.findByEmail(email) != null) {
-            throw new IllegalArgumentException("En användare med denna emailadress finns redan.");
-        }
+        validate(firstName, lastName, email, password);
 
         // Generate username
         String username = generateUsername(firstName, lastName);
@@ -75,12 +58,15 @@ public class UserService {
             throw new IllegalArgumentException("Kunde inte hitta användare med id: " + id);
         }
 
+        validate(firstName, lastName, email, password);
+
         // Update user
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
         user.setPassword(password);
         return userRepository.updateUser(user);
+
     }
 
     public boolean deleteUserById(Long id) {
@@ -124,6 +110,28 @@ public class UserService {
         // Length of 3 or length of name if shorter than 3
         int length = Math.min(name.length(), 3);
         return name.substring(0, length);
+    }
+
+    private void validate (String firstName, String lastName, String email, String password) {
+        // Check for null or empty
+        if (isInvalid(firstName) || isInvalid(lastName) || isInvalid(email) || isInvalid(password)) {
+            throw new IllegalArgumentException("Inga fält får lämnas tomma.");
+        }
+
+        // Validate email with regex pattern
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            throw new IllegalArgumentException("Ogiltigt emailformat.");
+        }
+
+        // Validate password length
+        if (password.length() < 3) {
+            throw new IllegalArgumentException("Lösenordet måste vara minst 3 karaktärer långt.");
+        }
+
+        // Check for existing email
+        if (userRepository.findByEmail(email) != null) {
+            throw new IllegalArgumentException("En användare med denna emailadress finns redan.");
+        }
     }
 
     private boolean isInvalid(String value) {
