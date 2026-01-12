@@ -58,7 +58,7 @@ public class LoanServices {
     public boolean returnBook(User user, Book book) {
 
         Loan loan = em.createQuery(
-            "SELECT l FROM Loan l WHERE l.user = :user AND l.book = :book AND l.returnDate IS NULL",
+            "SELECT l FROM Loan l WHERE l.user = :user AND l.book = :book AND l.returnDate IS NOT NULL",
             Loan.class
         )
             .setParameter("user", user)
@@ -73,9 +73,9 @@ public class LoanServices {
 
         em.getTransaction().begin();
 
-        loan.setReturnDate(ZonedDateTime.now());
         Book managedBook = loan.getBook();
         managedBook.setLoan(null);
+        em.remove(loan);
         em.getTransaction().commit();
         return true;
     }
