@@ -20,8 +20,9 @@ public class UserCLI {
         boolean closeMenu = false;
         while (!closeMenu && !SessionManager.isLoggedIn()) {
             System.out.println(appName());
-            System.out.println("Konto\n=========================================================");
-            System.out.println("1. Logga in  |  2. Skapa konto  |  3. Tillbaka");
+            System.out.println("Logga in/Skapa användare     Inloggad som: " + SessionManager.loggedInDisplayName());
+            System.out.println("========================================================");
+            System.out.println("1. Logga in  |  2. Skapa användare  |  3. Tillbaka");
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
             switch (choice) {
@@ -45,7 +46,8 @@ public class UserCLI {
         boolean closeMenu = false;
         while (!closeMenu && SessionManager.isLoggedIn()) {
             System.out.println(appName());
-            System.out.println("Hantera användare\n=========================================================");
+            System.out.println("Hantera användare     Inloggad som: " + SessionManager.loggedInDisplayName());
+            System.out.println("========================================================");
             System.out.println("1. Uppdatera användare  |  2. Radera användare  |  3. Logga ut  |  4. Tillbaka");
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
@@ -66,7 +68,8 @@ public class UserCLI {
         while (!SessionManager.isLoggedIn()) {
             try {
                 System.out.println(appName());
-                System.out.println("Logga in\n=========================================================");
+                System.out.println("Inloggningsuppgifter     Inloggad som: " + SessionManager.loggedInDisplayName());
+                System.out.println("========================================================");
                 System.out.println("(Skriv 'avbryt' för att avbryta inloggningen)");
                 // Ask for credentials, prompt to enable exiting from menu
                 String username = prompt("Användarnamn: ");
@@ -114,7 +117,8 @@ public class UserCLI {
         while (!success) {
             try {
                 System.out.println(appName());
-                System.out.println("Skapa användare\n=========================================================");
+                System.out.println("Skapa användare     Inloggad som: " + SessionManager.loggedInDisplayName());
+                System.out.println("========================================================");
                 System.out.println("(Skriv 'avbryt' för att avbryta skapandet av ny användare)");
 
                 String firstName = prompt("Förnamn: ");
@@ -152,7 +156,8 @@ public class UserCLI {
 
         try {
             System.out.println(appName());
-            System.out.println("UPPDATERA ANVÄNDARE\n=========================================================");
+            System.out.println("Uppdatera användare     Inloggad som: " + SessionManager.loggedInDisplayName());
+            System.out.println("========================================================");
             System.out.println("(Skriv 'avbryt' för att avbryta uppdateringen av användaren)");
 
             String firstName = prompt("Nytt förnamn: ");
@@ -164,6 +169,7 @@ public class UserCLI {
             if (firstName.isBlank()) firstName = currentUser.getFirstName();
             if (lastName.isBlank()) lastName = currentUser.getLastName();
             if (email.isBlank()) email = currentUser.getEmail();
+            if (password.isBlank()) password = currentUser.getPassword();
 
             User updatedUser = userService.updateUser(currentUser.getUserId(), firstName, lastName, email, password);
             SessionManager.login(updatedUser); // Update session with new user
@@ -187,13 +193,13 @@ public class UserCLI {
         // Make sure user is logged in
         if (!SessionManager.isLoggedIn()) return;
 
-        System.out.print("Är du säker på att du vill radera ditt konto? (ja/nej): ");
+        System.out.print("Är du säker på att du vill radera din användare? (ja/nej): ");
         if (scanner.nextLine().equalsIgnoreCase("ja")) {
             userService.deleteUserById(SessionManager.getCurrentUser().getUserId());
             SessionManager.logout();
-            System.out.println("Kontot har raderats och du har loggats ut.");
+            System.out.println("Användaren har raderats och du har loggats ut.");
         } else {
-            System.out.println("Du har valt att behålla kontot.");
+            System.out.println("Du har valt att behålla användaren.");
         }
     }
 
