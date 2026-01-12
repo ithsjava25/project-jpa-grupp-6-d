@@ -1,6 +1,5 @@
 package org.example;
 
-import org.example.EMFactory;
 import org.example.user.SessionManager;
 import org.example.user.UserCLI;
 import org.example.user.UserService;
@@ -19,13 +18,12 @@ public class App {
         final UserService userService = new UserService(userRepository);
         Scanner scanner = new Scanner(System.in);
         final UserCLI userCli = new UserCLI(userService, scanner);
-        SearchCli searchCli = new SearchCli(scanner, EMFactory.getEntityManager());
-        DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        SearchCli searchCli = new SearchCli(scanner);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // #######################
-        // Application starts here
-        // #######################
+         /*################################# \
+        |  ---- Application starts here ----  |
+         \ #################################*/
         boolean appRunning = true;
         while (appRunning) {
             System.out.println("\n\nBIBLIOTEKSSYSTEMET");
