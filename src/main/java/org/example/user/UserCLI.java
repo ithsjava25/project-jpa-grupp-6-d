@@ -160,6 +160,11 @@ public class UserCLI {
             String email = prompt("Ny email: ");
             String password = prompt("Nytt lösenord: ");
 
+            // If user didn't enter anything, keep current value
+            if (firstName.isBlank()) firstName = currentUser.getFirstName();
+            if (lastName.isBlank()) lastName = currentUser.getLastName();
+            if (email.isBlank()) email = currentUser.getEmail();
+
             User updatedUser = userService.updateUser(currentUser.getUserId(), firstName, lastName, email, password);
             SessionManager.login(updatedUser); // Update session with new user
             System.out.println("Användaren har uppdaterats!");
