@@ -1,6 +1,7 @@
 package org.example.user.repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.example.EMFactory;
 import org.example.User;
 
@@ -65,7 +66,7 @@ public class JpaUserRepository implements UserRepository {
             return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
                     .setParameter("email", email)
                     .getSingleResult();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
             return null;
         }
     }
@@ -76,7 +77,7 @@ public class JpaUserRepository implements UserRepository {
             return em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
                     .setParameter("username", username)
                     .getSingleResult();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
             return null;
         }
     }
