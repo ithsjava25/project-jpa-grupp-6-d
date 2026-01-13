@@ -118,10 +118,14 @@ public class App {
                 System.out.println((i + 1) + ". " + loan.getBook().getTitle() + " - Återlämnas: " + loan.getReturnDate().format(formatter));
             }
 
-            System.out.print("Välj nummer att lämna tillbaka (8 = tillbaka): ");
+            System.out.print("Välj nummer att lämna tillbaka (0 = tillbaka): ");
             try {
                 int input = Integer.parseInt(sc.nextLine());
-                if (input > 0 && input <= loans.size()) {
+
+                // Go back
+                if (input == 0) {
+                }
+                else if (input > 0 && input <= loans.size()) {
                     boolean success = loanServices.returnBook(
                         SessionManager.getCurrentUser(),
                         loans.get(input - 1).getBook(),
@@ -133,6 +137,9 @@ public class App {
                     else {
                         System.out.println("Kunde inte lämna tillbaka boken.");
                     }
+                }
+                else {
+                    System.out.println("Ogiltigt val.");
                 }
             }
             // Catch invalid input
