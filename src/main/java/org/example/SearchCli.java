@@ -8,54 +8,54 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class SearchCli {
-        private final BookSearch searchService = new BookSearch();
-        private final Scanner sc;
+    private final BookSearch searchService = new BookSearch();
+    private final Scanner sc;
 
-        // Constructor?
-        public SearchCli(Scanner sc) {
-            this.sc = sc;
-        }
+    // Constructor?
+    public SearchCli(Scanner sc) {
+        this.sc = sc;
+    }
 
-        public void bookSearchCli() {
-            // Try-with to force em to auto-close
-            try (EntityManager em = EMFactory.getEntityManager()) {
-                boolean running = true;
+    public void bookSearchCli() {
+        // Try-with to force em to auto-close
+        try (EntityManager em = EMFactory.getEntityManager()) {
+            boolean running = true;
 
-                while (running) {
-                    System.out.println("\n Bibliotekssystem – Sök");
-                    System.out.println("1) Sök på titel");
-                    System.out.println("2) Sök på författare");
-                    System.out.println("3) Sök på genre");
-                    System.out.println("0) Tillbaka");
-                    System.out.print("Välj: ");
+            while (running) {
+                System.out.println("\n Bibliotekssystem – Sök");
+                System.out.println("1) Sök på titel");
+                System.out.println("2) Sök på författare");
+                System.out.println("3) Sök på genre");
+                System.out.println("0) Tillbaka");
+                System.out.print("Välj: ");
 
-                    String choice = sc.nextLine().trim();
+                String choice = sc.nextLine().trim();
 
-                    switch (choice) {
-                        case "1" -> {
-                            System.out.print("Skriv titel (eller del av titel): ");
-                            String q = sc.nextLine();
-                            List<Book> results = searchService.searchByTitle(em, q);
-                            handleSearchFlow(results, em);
-                        }
-                        case "2" -> {
-                            System.out.print("Skriv författare (för- eller efternamn): ");
-                            String q = sc.nextLine();
-                            List<Book> results = searchService.searchByAuthor(em, q);
-                            handleSearchFlow(results, em);
-                        }
-                        case "3" -> {
-                            System.out.print("Skriv genre: ");
-                            String q = sc.nextLine();
-                            List<Book> results = searchService.searchByGenre(em, q);
-                            handleSearchFlow(results, em);
-                        }
-                        case "0" -> running = false;
-                        default -> System.out.println("Ogiltigt val, försök igen.");
+                switch (choice) {
+                    case "1" -> {
+                        System.out.print("Skriv titel (eller del av titel): ");
+                        String q = sc.nextLine();
+                        List<Book> results = searchService.searchByTitle(em, q);
+                        handleSearchFlow(results, em);
                     }
+                    case "2" -> {
+                        System.out.print("Skriv författare (för- eller efternamn): ");
+                        String q = sc.nextLine();
+                        List<Book> results = searchService.searchByAuthor(em, q);
+                        handleSearchFlow(results, em);
+                    }
+                    case "3" -> {
+                        System.out.print("Skriv genre: ");
+                        String q = sc.nextLine();
+                        List<Book> results = searchService.searchByGenre(em, q);
+                        handleSearchFlow(results, em);
+                    }
+                    case "0" -> running = false;
+                    default -> System.out.println("Ogiltigt val, försök igen.");
                 }
             }
         }
+    }
 
     // Flöde: lista -> välj -> detalj
 
@@ -121,7 +121,7 @@ public class SearchCli {
         if (desc == null || desc.isBlank()) desc = "(Ingen beskrivning)";
         System.out.println("\nBeskrivning:\n" + desc);
 
-        if (loanServices.isBookLoaned(b.getId(), em)){
+        if (loanServices.isBookLoaned(b.getId(), em)) {
             System.out.println("Status: Utlånad");
         } else {
             System.out.println("Status: Tillgänglig");
@@ -129,7 +129,7 @@ public class SearchCli {
             boolean isLoggedIn = SessionManager.isLoggedIn();
             boolean isRunning = true;
 
-            if (isLoggedIn){
+            if (isLoggedIn) {
                 while (isRunning) {
                     System.out.println("1. Låna bok | 2. Tillbaka");
                     String choice = sc.nextLine();
@@ -144,7 +144,7 @@ public class SearchCli {
                         default -> System.out.println("Ogiltigt val, försök igen.");
                     }
                 }
-            }
+            } else System.out.println("Logga in för att låna boken.");
         }
         System.out.println("==============================");
     }
