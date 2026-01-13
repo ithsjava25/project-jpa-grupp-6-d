@@ -3,6 +3,7 @@ package org.example.user.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.example.EMFactory;
+import org.example.LoanServices;
 import org.example.User;
 
 import java.util.List;
@@ -32,9 +33,15 @@ public class JpaUserRepository implements UserRepository {
     @Override
     public boolean deleteUserById(Long id) {
         try (EntityManager em = EMFactory.getEntityManager()) {
-            em.getTransaction().begin();
+            LoanServices loanServices = new LoanServices();
             User user = em.find(User.class, id);
+
             if (user != null) {
+                // Check for active loans
+                if (!loanServices.activeLoans(user, em).isEmpty()) {
+                    return false;
+                }
+                em.getTransaction().begin();
                 em.remove(user);
                 em.getTransaction().commit();
                 return true;
