@@ -55,6 +55,7 @@ public class Loan {
     @ManyToOne @JoinColumn (name = "loan_user")
     private User user;
 
-    @OneToOne(mappedBy = "loan")
+    @OneToOne
+    @JoinColumn(name = "bookID")
     private Book book;
 }

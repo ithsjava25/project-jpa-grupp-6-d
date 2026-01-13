@@ -7,6 +7,8 @@ import org.example.user.UserService;
 import org.example.user.repository.JpaUserRepository;
 import org.example.user.repository.UserRepository;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -18,6 +20,8 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         final UserCLI userCli = new UserCLI(userService, scanner);
         SearchCli searchCli = new SearchCli(scanner, EMFactory.getEntityManager());
+        DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // #######################
         // Application starts here
@@ -29,23 +33,62 @@ public class App {
             System.out.println("========================================================");
 
             if (SessionManager.isLoggedIn()) {
-                System.out.println("1. Sök bok  |  2. Hantera användare  |  3. Logga ut |  0. Avsluta");
+                System.out.println("1. Sök bok  |  2. Hantera användare  |  3. Logga ut  |  4. Mina lån  |  0. Avsluta");
             } else {
                 System.out.println("1. Sök bok  |  2. Logga in/Skapa konto  |  0. Avsluta");
             }
 
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
+            LoanServices loanServices = new LoanServices(EMFactory.getEntityManager());
             switch (choice) {
                 case "1" -> {
                     searchCli.bookSearchCli();
                 }
                 case "2" -> {
-                    if (SessionManager.isLoggedIn()) userCli.manageUserMenu();
-                    else userCli.userMenu();
+                    if (SessionManager.isLoggedIn()) {
+                        userCli.manageUserMenu();
+                    } else {
+                        userCli.userMenu();
+                    }
                 }
                 case "3" -> {
                     if (SessionManager.isLoggedIn()) userCli.logout();
+                }
+                case "4" -> {
+                    System.out.println("Dina aktiva lån:");
+                    List<Loan> loans = loanServices.activeLoans(SessionManager.getCurrentUser());
+
+                    boolean running = true;
+                    while (running) {
+                        if (!loans.isEmpty()) {
+                            int counter = 0;
+                            for (Loan loan : loans) {
+                                counter += 1;
+                                System.out.println(counter + ". Titel: " + loan.getBook().getTitle() + " - Åter: " + loan.getReturnDate()
+                                    .format(formatter));
+                            }
+                            System.out.println("Välj nummer för den bok du vill lämna tillbaka (0 = tillbaka): ");
+                            String inputString = scanner.nextLine();
+                            Integer input = Integer.parseInt(inputString);
+                            if (input >= 1 && input <= loans.size()) {
+                                loanServices.returnBook(
+                                    SessionManager.getCurrentUser(),
+                                    loans.get(input - 1).getBook()
+                                );
+                                loans.remove(input - 1);
+                                System.out.println("Du har lämnat tillbaka din bok!");
+                            } else if (input == 0) {
+                                running = false;
+                            } else {
+                                System.out.println("ogiltigt val.");
+                            }
+
+                        } else {
+                            System.out.println("Inga aktiva lån.");
+                            running = false;
+                        }
+                    }
                 }
                 case "0" -> appRunning = false;
                 default -> System.out.println("Ogiltigt val.");

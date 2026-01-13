@@ -81,7 +81,7 @@ public class Book {
     @ManyToMany(mappedBy = "books")
     private Set<Genre> genres = new HashSet<>();
 
-    @OneToOne @JoinColumn(name = "loaned_book")
+    @OneToOne (mappedBy = "book")
     private Loan loan;
 
     public Set<Author> getAuthors() {

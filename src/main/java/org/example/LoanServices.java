@@ -6,7 +6,7 @@ import java.util.List;
 
 public class LoanServices {
 
-    final private EntityManager em;
+    private final EntityManager em;
 
     public LoanServices(EntityManager em) {
         this.em = em;
@@ -16,7 +16,7 @@ public class LoanServices {
     public boolean isBookLoaned(Long bookId) {
 
         List<Loan> loans = em.createQuery(
-            "SELECT l FROM Loan l WHERE l.book.bookId = :bookId AND l.returnDate IS NULL",
+            "SELECT l FROM Loan l WHERE l.book.bookId = :bookId AND l.returnDate IS NOT NULL",
             Loan.class
         )
         .setParameter("bookId", bookId)
@@ -30,30 +30,35 @@ public class LoanServices {
     }
 
     // Låna en bok
-    public boolean loanBook(Long bookId, Long userId) {
+    public boolean loanBook(User user, Book book) {
 
-        if (isBookLoaned(bookId)) {
+        if (isBookLoaned(book.getId())) {
             return false;
         }
 
-        User user = em.find(User.class, userId);
-        Book book = em.find(Book.class, bookId);
+        em.getTransaction().begin();
+
+        Book managedBook = em.merge(book);
 
         Loan loan = new Loan();
 
         loan.setUser(user);
-        loan.setBook(book);
         loan.setLoanDate(ZonedDateTime.now());
-        loan.setReturnDate(null);
+        loan.setReturnDate(ZonedDateTime.now().plusDays((7)));
+
+        loan.setBook(managedBook);
+        managedBook.setLoan(loan);
         em.persist(loan);
+        em.getTransaction().commit();
+
         return true;
     }
 
-    // Lämna tillbak en bok
+    // Lämna tillbaka en bok
     public boolean returnBook(User user, Book book) {
 
         Loan loan = em.createQuery(
-            "SELECT l FROM Loan l WHERE l.user = :user AND l.book = :book AND l.returnDate IS NULL",
+            "SELECT l FROM Loan l WHERE l.user = :user AND l.book = :book AND l.returnDate IS NOT NULL",
             Loan.class
         )
             .setParameter("user", user)
@@ -68,9 +73,20 @@ public class LoanServices {
 
         em.getTransaction().begin();
 
-        loan.setReturnDate(ZonedDateTime.now());
-        book.setLoan(null);
+        Book managedBook = loan.getBook();
+        managedBook.setLoan(null);
+        em.remove(loan);
         em.getTransaction().commit();
         return true;
+    }
+
+    public List<Loan> activeLoans(User user) {
+
+        return em.createQuery(
+            "SELECT l FROM Loan l WHERE l.user = :user",
+            Loan.class
+        )
+            .setParameter("user", user)
+            .getResultList();
     }
 }

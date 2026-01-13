@@ -3,6 +3,7 @@ package org.example;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.example.user.SessionManager;
 
 import java.util.List;
 import java.util.Scanner;
@@ -104,13 +105,14 @@ public class SearchCli {
             Book selected = results.get(n - 1);
             printBookDetails(selected);
 
-            System.out.print("Tryck Enter för att gå tillbaka til sök");
+            System.out.print("Tryck Enter för att gå tillbaka till sök");
             sc.nextLine();
             return;
         }
     }
 
     private static void printBookDetails(Book b) {
+        LoanServices loanServices = new LoanServices(em);
         System.out.println("\n==============================");
         System.out.println(" " + b.getTitle());
         System.out.println("------------------------------");
@@ -121,6 +123,44 @@ public class SearchCli {
         String desc = b.getDescription();
         if (desc == null || desc.isBlank()) desc = "(Ingen beskrivning)";
         System.out.println("\nBeskrivning:\n" + desc);
+
+        if (loanServices.isBookLoaned(b.getId())){
+            System.out.println("Status: Utlånad");
+        } else {
+            System.out.println("Status: Tillgänglig");
+
+            boolean isLoggedIn = SessionManager.isLoggedIn();
+            boolean isRunning = true;
+
+            if (isLoggedIn){
+                while (isRunning) {
+                    System.out.println("1. Låna bok | 2. Tillbaka");
+                    String choice = sc.nextLine();
+
+                    switch (choice) {
+                        case "1" -> {
+                            loanServices.loanBook(SessionManager.getCurrentUser(), b);
+                            isRunning = false;
+                            System.out.println("Du har nu lånat boken!");
+                        }
+
+                        case "2" -> {
+                            isRunning = false;
+                        }
+                        default -> System.out.println("Ogiltigt val, försök igen.");
+                    }
+                }
+            }
+        }
+
+//        boolean isLoggedIn = SessionManager.isLoggedIn();
+//        User user = SessionManager.getCurrentUser();
+//        user.getUserId();
+
+        //todo:
+        // om tillgänglig och inloggad - låna bok
+            // om ej inloggad - skicka till logga in sidan.
+
         System.out.println("==============================");
     }
 
