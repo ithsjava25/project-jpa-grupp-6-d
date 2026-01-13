@@ -21,7 +21,7 @@ public class UserCLI {
         while (!closeMenu && !SessionManager.isLoggedIn()) {
             System.out.println(appName());
             System.out.println("Logga in/Skapa användare     Inloggad som: " + SessionManager.loggedInDisplayName());
-            System.out.println("========================================================");
+            System.out.println("===========================================================================");
             System.out.println("1. Logga in  |  2. Skapa användare  |  3. Tillbaka");
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
@@ -47,7 +47,7 @@ public class UserCLI {
         while (!closeMenu && SessionManager.isLoggedIn()) {
             System.out.println(appName());
             System.out.println("Hantera användare     Inloggad som: " + SessionManager.loggedInDisplayName());
-            System.out.println("========================================================");
+            System.out.println("===========================================================================");
             System.out.println("1. Uppdatera användare  |  2. Radera användare  |  3. Logga ut  |  4. Tillbaka");
             System.out.print("Menyval: ");
             String choice = scanner.nextLine();
@@ -69,7 +69,7 @@ public class UserCLI {
             try {
                 System.out.println(appName());
                 System.out.println("Inloggningsuppgifter     Inloggad som: " + SessionManager.loggedInDisplayName());
-                System.out.println("========================================================");
+                System.out.println("===========================================================================");
                 System.out.println("(Skriv 'avbryt' för att avbryta inloggningen)");
                 // Ask for credentials, prompt to enable exiting from menu
                 String username = prompt("Användarnamn: ");
@@ -118,11 +118,13 @@ public class UserCLI {
             try {
                 System.out.println(appName());
                 System.out.println("Skapa användare     Inloggad som: " + SessionManager.loggedInDisplayName());
-                System.out.println("========================================================");
+                System.out.println("===========================================================================");
                 System.out.println("(Skriv 'avbryt' för att avbryta skapandet av ny användare)");
 
                 String firstName = prompt("Förnamn: ");
+                firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
                 String lastName = prompt("Efternamn: ");
+                lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
                 String email = prompt("Email: ");
                 String password = prompt("Lösenord: ");
 
@@ -157,7 +159,7 @@ public class UserCLI {
         try {
             System.out.println(appName());
             System.out.println("Uppdatera användare     Inloggad som: " + SessionManager.loggedInDisplayName());
-            System.out.println("========================================================");
+            System.out.println("===========================================================================");
             System.out.println("(Skriv 'avbryt' för att avbryta uppdateringen av användaren)");
 
             String firstName = prompt("Nytt förnamn: ");
@@ -165,9 +167,11 @@ public class UserCLI {
             String email = prompt("Ny email: ");
             String password = prompt("Nytt lösenord: ");
 
-            // If user didn't enter anything, keep current value
+            // If user didn't enter anything, keep current value, otherwise capitalize first letter of name
             if (firstName.isBlank()) firstName = currentUser.getFirstName();
+            else firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
             if (lastName.isBlank()) lastName = currentUser.getLastName();
+            else lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
             if (email.isBlank()) email = currentUser.getEmail();
             if (password.isBlank()) password = currentUser.getPassword();
 
@@ -190,14 +194,17 @@ public class UserCLI {
     }
 
     public void deleteUser() {
-        // Make sure user is logged in
-        if (!SessionManager.isLoggedIn()) return;
-
         System.out.print("Är du säker på att du vill radera din användare? (ja/nej): ");
-        if (scanner.nextLine().equalsIgnoreCase("ja")) {
-            userService.deleteUserById(SessionManager.getCurrentUser().getUserId());
-            SessionManager.logout();
-            System.out.println("Användaren har raderats och du har loggats ut.");
+        if (scanner.nextLine().trim().equalsIgnoreCase("ja")) {
+
+            // Delete user if user doesn't have any active loans
+            if (userService.deleteUserById(SessionManager.getCurrentUser().getUserId())) {
+                SessionManager.logout();
+                System.out.println("Användaren har raderats och du har loggats ut.");
+            }
+            else {
+                System.out.println("Kunde inte radera kontot. Kontrollera att du inte har några aktiva lån.");
+            }
         } else {
             System.out.println("Du har valt att behålla användaren.");
         }
@@ -207,9 +214,9 @@ public class UserCLI {
     private String prompt(String message) {
         // Print the passed argument
         System.out.print(message);
-        String input = scanner.nextLine();
+        String input = scanner.nextLine().trim();
         // Exit from current menu if "avbryt" is entered
-        if (input.equalsIgnoreCase("avbryt")) {
+        if (input.equalsIgnoreCase("avbryt") || input.isBlank()) {
             throw new RuntimeException("AVBRUTET");
         }
         return input;
