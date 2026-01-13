@@ -216,7 +216,7 @@ public class UserCLI {
     }
 
     private String appName() {
-        return "\n\nBIBLIOTEKSSYSTEMET";
+        return "\n\nCLIBRARY";
     }
 
 }
