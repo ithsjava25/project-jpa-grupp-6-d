@@ -78,7 +78,12 @@ public class App {
     }
 
     private static void userMenu(UserCLI userCli) {
-        userCli.userMenu();
+        if (SessionManager.isLoggedIn()) {
+            userCli.manageUserMenu();
+        }
+        else {
+            userCli.userMenu();
+        }
     }
 
     private static void logOut(UserCLI userCli) {

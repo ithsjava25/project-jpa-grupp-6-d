@@ -30,7 +30,6 @@ public class UserService {
             throw new IllegalArgumentException("Ogiltigt lösenord");
         }
 
-        SessionManager.login(user);
         return user;
     }
 
