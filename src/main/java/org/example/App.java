@@ -64,71 +64,6 @@ public class App {
         }
         terminate();
     }
-//            LoanServices loanServices = new LoanServices();
-//            switch (choice) {
-//                case "1" -> {
-//                    searchCli.bookSearchCli();
-//                }
-//                case "2" -> {
-//                    if (SessionManager.isLoggedIn()) {
-//                        userCli.manageUserMenu();
-//                    } else {
-//                        userCli.userMenu();
-//                    }
-//                }
-//                case "3" -> {
-//                    if (SessionManager.isLoggedIn()) userCli.logout();
-//                }
-//                case "4" -> {
-//                    // Block guests from accessing loans
-//                    if (!SessionManager.isLoggedIn()) {
-//                        System.out.println("Du måste vara inloggad för att se lån.");
-//                        continue;
-//                    }
-//
-//                    try (EntityManager em = EMFactory.getEntityManager()) {
-//                        List<Loan> loans = loanServices.activeLoans(SessionManager.getCurrentUser(), em);
-//
-//                        boolean running = true;
-//                        while (running) {
-//                            if (!loans.isEmpty()) {
-//                                System.out.println("Dina aktiva lån:");
-//                                int counter = 0;
-//                                for (Loan loan : loans) {
-//                                    counter += 1;
-//                                    System.out.println(counter + ". Titel: " + loan.getBook().getTitle() + " - Åter: " + loan.getReturnDate()
-//                                        .format(formatter));
-//                                }
-//                                System.out.println("Välj nummer för den bok du vill lämna tillbaka (0 = tillbaka): ");
-//                                String inputString = sc.nextLine();
-//                                Integer input = Integer.parseInt(inputString);
-//                                if (input >= 1 && input <= loans.size()) {
-//                                    loanServices.returnBook(
-//                                        SessionManager.getCurrentUser(),
-//                                        loans.get(input - 1).getBook(),
-//                                        em
-//                                    );
-//                                    loans.remove(input - 1);
-//                                    System.out.println("Du har lämnat tillbaka din bok!");
-//                                } else if (input == 0) {
-//                                    running = false;
-//                                } else {
-//                                    System.out.println("ogiltigt val.");
-//                                }
-//
-//                            } else {
-//                                System.out.println("Inga aktiva lån.");
-//                                running = false;
-//                            }
-//                        }
-//                    }
-//                }
-//                case "0" -> appRunning = false;
-//                default -> System.out.println("Ogiltigt val.");
-//            }
-//        }
-//        terminate();
-//    }
 
     private static void printMainMenu() {
         System.out.println("\n\nCLIBRARY");
@@ -202,8 +137,6 @@ public class App {
 
         }
     }
-
-
 
     private static void terminate() {
         System.out.println("Bibliotekssystemet avslutat. Välkommen åter!");
