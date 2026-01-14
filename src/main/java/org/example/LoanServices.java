@@ -6,6 +6,8 @@ import java.util.List;
 
 public class LoanServices {
 
+
+
     // Kolla om en bok är utlånad
     public boolean isBookLoaned(Long bookId, EntityManager em) {
         List<Loan> loans = em.createQuery(

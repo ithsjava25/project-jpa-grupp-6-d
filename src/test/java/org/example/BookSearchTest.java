@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Disabled("Integration test – runs locally only")
 class BookSearchTest {
 
+
     private static EntityManagerFactory emf;
     private EntityManager em;
 
