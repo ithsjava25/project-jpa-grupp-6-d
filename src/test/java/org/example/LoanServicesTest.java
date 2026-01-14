@@ -8,7 +8,7 @@ import org.junit.jupiter.api.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+@Disabled("Integration test – runs locally only")
 public class LoanServicesTest {
 
     private static EntityManagerFactory emf;
