@@ -91,9 +91,14 @@ public class LoanServices {
 
     public List<Loan> activeLoans(User user, EntityManager em) {
 
-        return em.createQuery(
-            "SELECT l FROM Loan l WHERE l.user = :user",
+        return em.createQuery("""
+            SELECT l FROM Loan l
+            LEFT JOIN FETCH l.book b
+            LEFT JOIN FETCH l.user u
+            WHERE l.user = :user
+            """,
             Loan.class
+
         )
             .setParameter("user", user)
             .getResultList();
