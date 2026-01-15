@@ -127,7 +127,6 @@ public class App {
                 }
                 else if (input > 0 && input <= loans.size()) {
                     boolean success = loanServices.returnBook(
-                        SessionManager.getCurrentUser(),
                         loans.get(input - 1).getBook(),
                         em
                     );
