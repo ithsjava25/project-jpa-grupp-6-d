@@ -76,6 +76,10 @@ public class User {
         return userId;
     }
 
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
     @OneToMany(mappedBy = "user")
     private List<Loan> loans = new ArrayList<>();
 
