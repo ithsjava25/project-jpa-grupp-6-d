@@ -124,6 +124,7 @@ public class App {
 
                 // Go back
                 if (input == 0) {
+                    return;
                 }
                 else if (input > 0 && input <= loans.size()) {
                     boolean success = loanServices.returnBook(
