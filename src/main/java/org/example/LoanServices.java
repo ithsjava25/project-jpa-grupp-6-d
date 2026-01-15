@@ -56,26 +56,25 @@ public class LoanServices {
 
     // Lämna tillbaka en bok
     public boolean returnBook(User user, Book book, EntityManager em) {
-
-        try{
-            Loan loan = em.createQuery(
-                    "SELECT l FROM Loan l WHERE l.user = :user AND l.book = :book AND l.returnDate IS NOT NULL",
-                    Loan.class
-                )
-                .setParameter("user", user)
-                .setParameter("book", book)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
-
-            if (loan == null) {
+        try {
+            // Find loan
+            Book managedBook = em.find(Book.class, book.getId());
+            if (managedBook == null || managedBook.getLoan() == null) {
                 return false;
             }
 
+            Loan loan = managedBook.getLoan();
+
             em.getTransaction().begin();
-            Book managedBook = loan.getBook();
+
+            // Break the connection between the book and loan
             managedBook.setLoan(null);
-            em.remove(loan);
+            loan.setBook(null);
+            loan.setUser(null);
+
+            // Remove the loan
+            Loan managedLoan = em.merge(loan);
+            em.remove(managedLoan);
 
             em.getTransaction().commit();
             return true;
