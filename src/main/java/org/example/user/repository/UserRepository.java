@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface UserRepository {
     User createUser(User user);
-    User updateUser(User user);
+    User updateUser(Long id, String firstName, String lastName, String email, String password);
     boolean deleteUserById(Long id);
     boolean deleteUserByUsername(String username);
 
