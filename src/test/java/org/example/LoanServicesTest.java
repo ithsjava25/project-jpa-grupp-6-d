@@ -57,10 +57,9 @@ public class LoanServicesTest {
     void returnBook_executes_without_error() {
         LoanServices service = new LoanServices();
 
-        User user = em.find(User.class, 1L);
         Book book = em.find(Book.class, 1L);
 
-        boolean result = service.returnBook(user, book, em);
+        boolean result = service.returnBook(book, em);
 
         assertNotNull(result);
     }
