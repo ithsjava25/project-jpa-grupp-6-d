@@ -52,7 +52,6 @@ public class UserService {
     public User updateUser(Long id, String firstName, String lastName, String email, String password) {
         validateInput(firstName, lastName, email, password);
 
-        // Repository hanterar email-check och uppdatering i samma transaktion
         return userRepository.updateUser(id, firstName, lastName, email, password);
     }
 

@@ -43,8 +43,10 @@ public class JpaUserRepository implements UserRepository {
 
             em.getTransaction().commit();
             return user;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Kunde inte uppdatera användare");
+            } catch (IllegalArgumentException e) {
+                throw e;
+            } catch (Exception e) {
+            throw new IllegalArgumentException("Kunde inte uppdatera användare", e);
         }
     }
 
