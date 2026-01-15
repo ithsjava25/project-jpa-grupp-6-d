@@ -55,7 +55,7 @@ public class LoanServices {
     }
 
     // Lämna tillbaka en bok
-    public boolean returnBook(User user, Book book, EntityManager em) {
+    public boolean returnBook(Book book, EntityManager em) {
         try {
             // Find loan
             Book managedBook = em.find(Book.class, book.getId());
