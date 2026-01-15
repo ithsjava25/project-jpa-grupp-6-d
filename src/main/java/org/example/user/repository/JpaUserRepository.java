@@ -3,7 +3,6 @@ package org.example.user.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.example.EMFactory;
-import org.example.LoanServices;
 import org.example.User;
 
 import java.util.List;
@@ -113,19 +112,6 @@ public class JpaUserRepository implements UserRepository {
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;
-        }
-    }
-
-    public User findByEmailOrUsername(String email, String username) {
-        try (EntityManager em = EMFactory.getEntityManager()) {
-            return em.createQuery(
-                    "SELECT u FROM User u WHERE u.email = :email OR u.username = :username",
-                    User.class)
-                .setParameter("email", email)
-                .setParameter("username", username)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
         }
     }
 
