@@ -52,15 +52,18 @@ public class JpaUserRepository implements UserRepository {
     @Override
     public boolean deleteUserById(Long id) {
         try (EntityManager em = EMFactory.getEntityManager()) {
-            LoanServices loanServices = new LoanServices();
+            em.getTransaction().begin();
+
+            // Hämta användaren
             User user = em.find(User.class, id);
 
             if (user != null) {
                 // Check for active loans
-                if (!loanServices.activeLoans(user, em).isEmpty()) {
+                if (!user.getLoans().isEmpty()) {
+                    em.getTransaction().rollback();
                     return false;
                 }
-                em.getTransaction().begin();
+
                 em.remove(user);
                 em.getTransaction().commit();
                 return true;
