@@ -1,6 +1,7 @@
 package org.example;
 
 import jakarta.persistence.EntityManager;
+import org.example.Entities.User;
 import org.example.user.UserService;
 import org.example.user.repository.UserRepository;
 import org.example.user.repository.JpaUserRepository;

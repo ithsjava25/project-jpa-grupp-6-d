@@ -1,6 +1,7 @@
 package org.example;
 
 import jakarta.persistence.EntityManager;
+import org.example.Entities.Loan;
 import org.example.user.SessionManager;
 import org.example.user.UserCLI;
 import org.example.user.UserService;

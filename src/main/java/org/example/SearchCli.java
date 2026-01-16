@@ -1,6 +1,7 @@
 package org.example;
 
 import jakarta.persistence.EntityManager;
+import org.example.Entities.Book;
 import org.example.user.SessionManager;
 
 import java.util.List;

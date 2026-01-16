@@ -4,6 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+import org.example.Entities.Author;
+import org.example.Entities.Book;
+import org.example.Entities.Genre;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

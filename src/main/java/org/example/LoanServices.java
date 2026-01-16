@@ -1,6 +1,10 @@
 package org.example;
 
 import jakarta.persistence.EntityManager;
+import org.example.Entities.Book;
+import org.example.Entities.Loan;
+import org.example.Entities.User;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 

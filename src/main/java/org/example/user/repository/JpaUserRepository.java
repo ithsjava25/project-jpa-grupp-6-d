@@ -3,7 +3,7 @@ package org.example.user.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.example.EMFactory;
-import org.example.User;
+import org.example.Entities.User;
 
 import java.util.List;
 

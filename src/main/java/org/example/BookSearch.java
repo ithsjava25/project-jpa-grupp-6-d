@@ -1,6 +1,8 @@
 package org.example;
 
 import jakarta.persistence.EntityManager;
+import org.example.Entities.Book;
+
 import java.util.List;
 
 public class BookSearch {

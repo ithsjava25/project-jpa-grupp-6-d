@@ -3,6 +3,9 @@ package org.example;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.example.Entities.Book;
+import org.example.Entities.Loan;
+import org.example.Entities.User;
 import org.junit.jupiter.api.*;
 
 import java.util.List;

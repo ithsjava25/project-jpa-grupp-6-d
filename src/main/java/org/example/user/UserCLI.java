@@ -1,6 +1,6 @@
 package org.example.user;
 
-import org.example.User;
+import org.example.Entities.User;
 import java.util.Scanner;
 
 public class UserCLI {
