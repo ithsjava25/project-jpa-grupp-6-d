@@ -1,6 +1,7 @@
 package org.example;
 
 import jakarta.persistence.EntityManager;
+import org.example.Entities.Loan;
 import org.example.user.SessionManager;
 import org.example.user.UserCLI;
 import org.example.user.UserService;
@@ -124,10 +125,10 @@ public class App {
 
                 // Go back
                 if (input == 0) {
+                    return;
                 }
                 else if (input > 0 && input <= loans.size()) {
                     boolean success = loanServices.returnBook(
-                        SessionManager.getCurrentUser(),
                         loans.get(input - 1).getBook(),
                         em
                     );

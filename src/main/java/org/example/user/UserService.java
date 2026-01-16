@@ -1,6 +1,6 @@
 package org.example.user;
 
-import org.example.User;
+import org.example.Entities.User;
 import org.example.user.repository.UserRepository;
 
 import java.util.List;
@@ -50,23 +50,26 @@ public class UserService {
     }
 
     public User updateUser(Long id, String firstName, String lastName, String email, String password) {
-        // Get user by id
-        User user = userRepository.findById(id);
+        validateInput(firstName, lastName, email, password);
 
-        // Check if a user was found
-        if (user == null) {
-            throw new IllegalArgumentException("Kunde inte hitta användare med id: " + id);
+        return userRepository.updateUser(id, firstName, lastName, email, password);
+    }
+
+    private void validateInput(String firstName, String lastName, String email, String password) {
+        // Check for null or empty
+        if (isInvalid(firstName) || isInvalid(lastName) || isInvalid(email) || isInvalid(password)) {
+            throw new IllegalArgumentException("Inga fält får lämnas tomma.");
         }
 
-        validate(firstName, lastName, email, password);
+        // Validate email with regex pattern
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            throw new IllegalArgumentException("Ogiltigt emailformat.");
+        }
 
-        // Update user
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setPassword(password);
-        return userRepository.updateUser(user);
-
+        // Validate password length
+        if (password.length() < 3) {
+            throw new IllegalArgumentException("Lösenordet måste vara minst 3 karaktärer långt.");
+        }
     }
 
     public boolean deleteUserById(Long id) {
@@ -112,21 +115,8 @@ public class UserService {
         return name.substring(0, length);
     }
 
-    private void validate (String firstName, String lastName, String email, String password) {
-        // Check for null or empty
-        if (isInvalid(firstName) || isInvalid(lastName) || isInvalid(email) || isInvalid(password)) {
-            throw new IllegalArgumentException("Inga fält får lämnas tomma.");
-        }
-
-        // Validate email with regex pattern
-        if (!EMAIL_PATTERN.matcher(email).matches()) {
-            throw new IllegalArgumentException("Ogiltigt emailformat.");
-        }
-
-        // Validate password length
-        if (password.length() < 3) {
-            throw new IllegalArgumentException("Lösenordet måste vara minst 3 karaktärer långt.");
-        }
+    private void validate(String firstName, String lastName, String email, String password) {
+        validateInput(firstName, lastName, email, password);
 
         // Check for existing email
         if (userRepository.findByEmail(email) != null) {

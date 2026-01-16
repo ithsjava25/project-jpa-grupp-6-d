@@ -3,6 +3,9 @@ package org.example;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.example.Entities.Book;
+import org.example.Entities.Loan;
+import org.example.Entities.User;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -57,10 +60,9 @@ public class LoanServicesTest {
     void returnBook_executes_without_error() {
         LoanServices service = new LoanServices();
 
-        User user = em.find(User.class, 1L);
         Book book = em.find(Book.class, 1L);
 
-        boolean result = service.returnBook(user, book, em);
+        boolean result = service.returnBook(book, em);
 
         assertNotNull(result);
     }

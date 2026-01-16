@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Entities.User;
 import org.example.user.UserService;
 import org.example.user.repository.UserRepository;
 

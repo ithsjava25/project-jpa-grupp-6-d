@@ -3,8 +3,7 @@ package org.example.user.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.example.EMFactory;
-import org.example.LoanServices;
-import org.example.User;
+import org.example.Entities.User;
 
 import java.util.List;
 
@@ -18,30 +17,54 @@ public class JpaUserRepository implements UserRepository {
             em.getTransaction().commit();
             return user;
         }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Kunde inte skapa användare. E-post eller användarnamn är troligen redan upptaget.");
+        }
     }
 
     @Override
-    public User updateUser(User user) {
+    public User updateUser(Long id, String firstName, String lastName, String email, String password) {
         try (EntityManager em = EMFactory.getEntityManager()) {
             em.getTransaction().begin();
-            User updatedUser = em.merge(user);
+
+            // Get user
+            User user = em.find(User.class, id);
+
+            if (user == null) {
+                em.getTransaction().rollback();
+                throw new IllegalArgumentException("Kunde inte hitta användare med id: " + id);
+            }
+
+            // 3. Update user
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setEmail(email);
+            user.setPassword(password);
+
             em.getTransaction().commit();
-            return updatedUser;
+            return user;
+            } catch (IllegalArgumentException e) {
+                throw e;
+            } catch (Exception e) {
+            throw new IllegalArgumentException("Kunde inte uppdatera användare", e);
         }
     }
 
     @Override
     public boolean deleteUserById(Long id) {
         try (EntityManager em = EMFactory.getEntityManager()) {
-            LoanServices loanServices = new LoanServices();
+            em.getTransaction().begin();
+
+            // Hämta användaren
             User user = em.find(User.class, id);
 
             if (user != null) {
                 // Check for active loans
-                if (!loanServices.activeLoans(user, em).isEmpty()) {
+                if (!user.getLoans().isEmpty()) {
+                    em.getTransaction().rollback();
                     return false;
                 }
-                em.getTransaction().begin();
+
                 em.remove(user);
                 em.getTransaction().commit();
                 return true;
@@ -70,9 +93,14 @@ public class JpaUserRepository implements UserRepository {
     @Override
     public User findByEmail(String email) {
         try (EntityManager em = EMFactory.getEntityManager()) {
-            return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", email)
-                    .getSingleResult();
+            return em.createQuery("""
+                SELECT u FROM User u
+                WHERE u.email = :email
+                """,
+                User.class
+                )
+                .setParameter("email", email)
+                .getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Entities;
 
 import jakarta.persistence.*;
 
@@ -14,7 +14,9 @@ public class User {
 
     private String firstName;
     private String lastName;
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(unique = true, nullable = false)
     private String username;
     private String password;
 
@@ -72,6 +74,10 @@ public class User {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
     }
 
     @OneToMany(mappedBy = "user")
